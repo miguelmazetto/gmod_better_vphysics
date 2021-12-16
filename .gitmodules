@@ -1,0 +1,4 @@
+[submodule "sourcesdk-minimal"]
+	path = sourcesdk-minimal
+	url = https://github.com/danielga/sourcesdk-minimal
+	branch = x86-64-branch
