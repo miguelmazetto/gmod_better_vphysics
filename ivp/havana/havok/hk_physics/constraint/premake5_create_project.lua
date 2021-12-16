@@ -28,7 +28,10 @@ group("IVP")
 			"stiff_spring/stiff_spring_constraint.cpp",
 			"local_constraint_system/local_constraint_system.cpp",
 			"../core/rigid_body_core.cpp",
-			"../effector/rigid_body_binary_effector.cpp"
+			"../effector/rigid_body_binary_effector.cpp",
+			"../../../../ivp_physics/hk_physics/constraint/local_constraint_system/local_constraint_system.cpp",
+			"../../../../ivp_physics/hk_physics/core/rigid_body_core.cpp",
+			"../../../../ivp_physics/hk_physics/effector/rigid_body_binary_effector.cpp"
 		})
 		vpaths({["Source files/*"] = "**.cpp"})
 

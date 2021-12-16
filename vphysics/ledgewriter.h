@@ -8,7 +8,7 @@
 #define LEDGEWRITER_H
 #ifdef _WIN32
 #pragma once
-//#define byte unsigned char
+#define byte unsigned char
 #endif
 
 #include "vphysics/virtualmesh.h"

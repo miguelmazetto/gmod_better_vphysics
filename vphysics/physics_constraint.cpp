@@ -52,7 +52,7 @@
 #include "hk_physics/constraint/pulley/pulley_constraint.h"
 #include "hk_physics/constraint/pulley/pulley_bp.h"
 
-#include "hk_physics/constraint/local_constraint_system/local_constraint_system.h"
+#include "constraint/local_constraint_system/local_constraint_system.h"
 #include "hk_physics/constraint/local_constraint_system/local_constraint_system_bp.h"
 
 #include "ivp_cache_object.hxx"

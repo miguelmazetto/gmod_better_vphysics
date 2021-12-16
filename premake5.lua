@@ -1,4 +1,5 @@
 include("sourcesdk-minimal")
+include("extrasdk")
 include("ivp/havana/havok/hk_base")
 include("ivp/havana/havok/hk_math")
 include("ivp/havana/havok/hk_physics/constraint")

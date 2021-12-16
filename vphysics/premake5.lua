@@ -10,9 +10,15 @@ project("vphysics")
 	debugdir("%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}")
 	objdir("!%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}/intermediate/%{prj.name}")
 	libdirs({
-		"../sourcesdk-minimal/lib/public",
 		"../ivp/projects/" .. os.target() .. "/" .. _ACTION
 	})
+
+	filter("platforms:x86")
+		libdirs({"../sourcesdk-minimal/lib/public"})
+
+	filter("platforms:x86_64")
+		libdirs({"../sourcesdk-minimal/lib/public/x64"})
+
 	sysincludedirs({
 		"../sourcesdk-minimal/public",
 		"../ivp/ivp_intern",
@@ -23,6 +29,7 @@ project("vphysics")
 		"../ivp/ivp_controller",
 		"../ivp/ivp_compact_builder",
 		"../ivp/havana/havok",
+		"../ivp/havana/havok/hk_physics",
 		"../ivp/havana"
 	})
 	files({
@@ -50,17 +57,24 @@ project("vphysics")
 	})
 	vpaths({["Source files/*"] = "*.cpp"})
 	
+	filter("platforms:x86","system:windows")
+		defines({"COMPILER_MSVC32","WIN32"})
+
+	filter("platforms:x86_64","system:windows")
+		defines({"COMPILER_MSVC64","WIN32","WIN64"})
+
 	filter("system:linux")
 		defines({"_LIB", "LINUX"})
 		buildoptions { "-fpic", "-fno-semantic-interposition" }
 
 	IncludeIVP_hk_base()
 	IncludeIVP_hk_math()
+	IncludeIVPPhysics()
 	IncludeIVP_havana_constraints()
 	IncludeIVPCompactBuilder()
-	IncludeIVPPhysics()
+	IncludeSDKInterfaces()
 	IncludeSDKTier0()
 	IncludeSDKTier1()
-	IncludeSDKTier2()
+	--IncludeSDKTier2()
 	IncludeSDKMathlib()
 	--IncludeSDKvstdlib()
