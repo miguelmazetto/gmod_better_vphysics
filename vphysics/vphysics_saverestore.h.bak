@@ -86,7 +86,6 @@ extern CVPhysPtrUtlVectorSaveRestoreOps g_VPhysPtrUtlVectorSaveRestoreOps;
 #define DEFINE_VPHYSPTR_UTLVECTOR(name) \
 	{ FIELD_CUSTOM, #name, offsetof(classNameTypedef,name), 1, FTYPEDESC_SAVE, NULL, &g_VPhysPtrUtlVectorSaveRestoreOps, NULL }
 //lwss end
-
 //-----------------------------------------------------------------------------
 
 typedef bool (*PhysSaveFunc_t)( const physsaveparams_t &params, void *pCastedObject ); // second parameter for convenience

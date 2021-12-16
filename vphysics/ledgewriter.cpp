@@ -7,9 +7,6 @@
 #include "cbase.h"
 #include "convert.h"
 
-#include <algorithm>
-using namespace std;
-
 #include <ivp_surface_manager.hxx>
 #include <ivp_surman_polygon.hxx>
 #include <ivp_template_surbuild.hxx>
@@ -29,7 +26,7 @@ static int MaxLedgeVertIndex( const IVP_Compact_Ledge *pLedge )
 		for ( int j = 0; j < 3; j++ )
 		{
 			int ivpIndex = pTri->get_edge(j)->get_start_point_index();
-			maxIndex = max(maxIndex, ivpIndex);
+			maxIndex = MAX(maxIndex, ivpIndex);
 		}
 	}
 	return maxIndex;
@@ -80,8 +77,8 @@ static void BuildVertMap( vertmap_t &out, const Vector *pVerts, int vertexCount,
 				}
 				Assert(minDist<0.1f);
 				out.map[ivpIndex] = index;
-				out.minRef = min(out.minRef, index);
-				out.maxRef = max(out.maxRef, index);
+				out.minRef = MIN(out.minRef, index);
+				out.maxRef = MAX(out.maxRef, index);
 			}
 		}
 	}
@@ -108,7 +105,7 @@ void PackLedgeIntoBuffer( packedhull_t *pHull, CUtlBuffer &buf, const IVP_Compac
 	CUtlVector<int> edgeList, edgeMap;
 	vertmap_t vertMap;
 	BuildVertMap( vertMap, list.pVerts, list.vertexCount, pLedge );
-	pHull->baseVert = (byte)vertMap.minRef;
+	pHull->baseVert = vertMap.minRef;
 	// clear the maps
 	triangleMap.EnsureCount(pLedge->get_n_triangles());
 	for ( int i = 0; i < triangleMap.Count(); i++ )
@@ -233,7 +230,10 @@ void CVPhysicsVirtualMeshWriter::UnpackCompactLedgeFromHull( IVP_Compact_Ledge *
 	pLedge->has_chilren_flag = isVirtualLedge ? IVP_TRUE : IVP_FALSE;
 
 	// Make the offset -pLedge so the result is a NULL ledgetree node - we haven't needed to create one of these as of yet
-	pLedge->ledgetree_node_offset = -((ssize_t)pLedge);
+	//lwss - x64 fixes
+	//pLedge->ledgetree_node_offset = -((int)pLedge);
+	pLedge->ledgetree_node_offset = -((intptr_t)pLedge);
+	//lwss end
 
 	// keep track of which triangle edge referenced this edge (so the next one can swap the order and point to the first one)
 	int forwardEdgeIndex[255];

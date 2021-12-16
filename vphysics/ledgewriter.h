@@ -8,7 +8,6 @@
 #define LEDGEWRITER_H
 #ifdef _WIN32
 #pragma once
-#define byte unsigned char
 #endif
 
 #include "vphysics/virtualmesh.h"
@@ -47,7 +46,7 @@ struct packedhull_t
 	byte baseVert;
 	inline size_t DataSize() const
 	{
-		return (sizeof(packedtriangle_t) * (unsigned short)triangleCount) + (sizeof(packededge_t)* (unsigned short)edgeCount);
+		return (sizeof(packedtriangle_t) * triangleCount) + (sizeof(packededge_t)*edgeCount);
 	}
 };
 

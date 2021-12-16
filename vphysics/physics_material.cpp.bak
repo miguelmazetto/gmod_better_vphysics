@@ -581,7 +581,7 @@ int CPhysicsSurfaceProps::ParseSurfaceData( const char *pFileName, const char *p
 		prop.data.physics.friction = 0.8f;
 		m_shadowFallback = m_props.AddToTail( prop );
 	}
-	return m_props.Count();
+	return m_props.Size();
 }
 
 

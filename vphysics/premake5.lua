@@ -85,8 +85,8 @@ project("vphysics")
 	IncludeSDKMathlib()
 	--IncludeSDKvstdlib()
 
-	filter("system:windows")
-		debuggertype("NativeOnly")
-
-	filter({"system:windows","platforms:x86"})
-		debugcommand('cp -f --reply=yes D:/UserFiles/repos/gmod_better_vphysics/projects/windows/vs2019/x86/Debug/vphysics.dll C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/bin && C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/bin/gmod.exe')
+	--filter("system:windows")
+	--	debuggertype("NativeOnly")
+--
+	--filter({"system:windows","platforms:x86"})
+	--	debugcommand('cp -f --reply=yes D:/UserFiles/repos/gmod_better_vphysics/projects/windows/vs2019/x86/Debug/vphysics.dll C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/bin && C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/bin/gmod.exe')

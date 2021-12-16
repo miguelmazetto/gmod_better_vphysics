@@ -1041,7 +1041,7 @@ public:
 		m_obstacle = obstacle;
 		m_ray = ray;
 		m_traceLength = 0;
-		m_totalTraceLength = MAX( ray->m_baseLength, 1e-8f );
+		m_totalTraceLength = max( ray->m_baseLength, 1e-8f );
 		m_pointClosestToIntersection = axis;
 		m_epsilon = g_PhysicsUnits.collisionSweepEpsilon;
 	}
