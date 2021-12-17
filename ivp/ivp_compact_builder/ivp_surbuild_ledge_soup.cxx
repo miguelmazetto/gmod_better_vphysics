@@ -1346,8 +1346,8 @@ IVP_Compact_Ledgetree_Node *IVP_SurfaceBuilder_Ledge_Soup::build_ledgetree(IVV_S
 
     IVP_Compact_Ledgetree_Node *current_node = this->ledgetree_work;
 
-    IVP_ASSERT((int)current_node <  (int)this->clt_highmem); // ledgetree memory overwrite!
-    IVP_ASSERT((int)current_node >= (int)this->clt_lowmem);  // ledgetree memory underwrite!
+    IVP_ASSERT((size_t)current_node <  (size_t)this->clt_highmem); // ledgetree memory overwrite!
+    IVP_ASSERT((size_t)current_node >= (size_t)this->clt_lowmem);  // ledgetree memory underwrite!
 	
     this->ledgetree_work++;
     
@@ -1399,8 +1399,8 @@ void IVP_SurfaceBuilder_Ledge_Soup::ledgetree_debug_output(const IVP_Compact_Led
 {
     // *** debugging START ******************************************************
     IVP_IF(1) {
-	IVP_ASSERT((int)node < (int)this->clt_highmem); // ledgetree memory overread!
-	IVP_ASSERT((int)node >= (int)this->clt_lowmem); // ledgetree memory underread!
+	IVP_ASSERT((size_t)node < (size_t)this->clt_highmem); // ledgetree memory overread!
+	IVP_ASSERT((size_t)node >= (size_t)this->clt_lowmem); // ledgetree memory underread!
     }
     
     //for (int x=0; x<ivp_debug_sf_indent; x++) {

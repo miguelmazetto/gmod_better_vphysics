@@ -40,22 +40,29 @@ workspace("gmod_better_vphysics")
 	inlining("Auto")
 	rtti("On")
 	vectorextensions("SSE2")
+	targetprefix("")
 
-	configurations({"ReleaseWithSymbols", "Release", "Debug"})
+	configurations({"Debug", "ReleaseWithSymbols", "Release"})
+	targetdir("%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}")
+	debugdir("%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}")
+	objdir("!%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}/intermediate/%{prj.name}")
+	sysincludedirs({"sourcesdk-minimal/public"})
 
 	platforms({"x86_64", "x86"})
 
-	filter("platforms:x86_64")
-		architecture("x86_64")
-
 	filter("platforms:x86")
 		architecture("x86")
+		libdirs({"sourcesdk-minimal/lib/public"})
 
-	filter("platforms:x86","system:windows")
-		defines("COMPILER_MSVC32","WIN32")
+	filter("platforms:x86_64")
+		architecture("x86_64")
+		libdirs({"sourcesdk-minimal/lib/public/x64"})
 
-	filter("platforms:x86_64","system:windows")
-		defines("COMPILER_MSVC64","WIN64")
+	filter({"platforms:x86","system:windows"})
+		defines({"COMPILER_MSVC32","WIN32"})
+
+	filter({"platforms:x86_64","system:windows"})
+		defines({"COMPILER_MSVC64","WIN64"})
 
 	filter("configurations:ReleaseWithSymbols")
 		optimize("Debug")
@@ -94,13 +101,19 @@ workspace("gmod_better_vphysics")
 		staticruntime("Off")
 		defaultplatform("x86")
 		linkoptions("-Wl,--no-undefined")
-		defines({ "LINUX", "COMPILER_GCC" })
+		defines({ "LINUX", "_LINUX", "COMPILER_GCC", "POSIX" })
+		--undefines({"COMPILER_MSVC32"})
+		--links({"dl"})
 
 	filter("files:**.cpp or **.cxx or **.cc")
 		strictaliasing("Level3")
 
+	filter({"kind:StaticLib","system:linux"})
+		buildoptions { "-fpic", "-fno-semantic-interposition" }
+		
+	filter({})
+
 	include("vphysics")
-	filter({})	
 	
 workspace("gmod_better_vphysics")
 

@@ -1065,32 +1065,33 @@ static void LedgeInsidePoint( IVP_Compact_Ledge *pLedge, Vector& out )
 //			p3 - 
 // Output : float (volume in units^3)
 //-----------------------------------------------------------------------------
-static float TetrahedronVolume( const Vector &p0, const Vector &p1, const Vector &p2, const Vector &p3 )
-{
-	Vector a, b, c, cross;
-	float volume = 1.0f / 6.0f;
-
-	a = p1 - p0;
-	b = p2 - p0;
-	c = p3 - p0;
-	cross = CrossProduct( b, c );
-
-	volume *= DotProduct( a, cross );
-	if ( volume < 0 )
-		return -volume;
-	return volume;
-}
-
-
-static float TriangleArea( const Vector &p0, const Vector &p1, const Vector &p2 )
-{
-	Vector e0 = p1 - p0;
-	Vector e1 = p2 - p0;
-	Vector cross;
-
-	CrossProduct( e0, e1, cross );
-	return 0.5 * cross.Length();
-}
+// lwss: already defined in mathlib
+//static float TetrahedronVolume( const Vector &p0, const Vector &p1, const Vector &p2, const Vector &p3 )
+//{
+//	Vector a, b, c, cross;
+//	float volume = 1.0f / 6.0f;
+//
+//	a = p1 - p0;
+//	b = p2 - p0;
+//	c = p3 - p0;
+//	cross = CrossProduct( b, c );
+//
+//	volume *= DotProduct( a, cross );
+//	if ( volume < 0 )
+//		return -volume;
+//	return volume;
+//}
+//
+//
+//static float TriangleArea( const Vector &p0, const Vector &p1, const Vector &p2 )
+//{
+//	Vector e0 = p1 - p0;
+//	Vector e1 = p2 - p0;
+//	Vector cross;
+//
+//	CrossProduct( e0, e1, cross );
+//	return 0.5 * cross.Length();
+//}
 
 
 //-----------------------------------------------------------------------------

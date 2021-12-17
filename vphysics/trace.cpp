@@ -2320,7 +2320,7 @@ float CTraceSolver::SolveMeshIntersection( simplex_t &simplex )
 // this is used for the near miss case
 float CTraceSolver::SolveMeshIntersection2D( simplex_t &simplex )
 {
-	AssertMsg( simplex.vertCount == 3, "simplex.vertCount != 3: %d", simplex.vertCount );
+	AssertMsg1( simplex.vertCount == 3, "simplex.vertCount != 3: %d", simplex.vertCount );
 	if ( simplex.vertCount != 3 )
 		return 0.0f;
 

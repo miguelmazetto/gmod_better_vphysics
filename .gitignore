@@ -3,3 +3,5 @@ projects
 ivp/projects
 *.sln
 *.vcxproj
+testserver
+Makefile

@@ -67,7 +67,7 @@ typedef unsigned short		hk_uint16;
 typedef unsigned int		hk_uint32;
 
 //#if defined(__POWERPC__) && defined(__MWERKS__)
-//#include <stddef.h>
+#include <stddef.h>
 typedef size_t 			hk_size_t;  // CK: unsigned long int ..
 //#else
 //typedef unsigned int 	hk_size_t;

@@ -1,26 +1,29 @@
 local testserver = _SCRIPT_DIR .. "/../testserver"
+local sdklibs = _SCRIPT_DIR .. "/../sourcesdk-minimal/lib/public"
 
 project("vphysics")
 	_project = project()
 	_project.serverside = true
-	configurations({"ReleaseWithSymbols", "Release", "Debug"})
 	kind("SharedLib")
 	language("C++")
 	warnings("Default")
 	location("../projects/" .. os.target() .. "/" .. _ACTION)
-	targetdir("%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}")
-	debugdir("%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}")
-	objdir("!%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}/intermediate/%{prj.name}")
 	
 	--libdirs({
 	--	"../ivp/projects/" .. os.target() .. "/" .. _ACTION
 	--})
 
-	filter("platforms:x86")
-		libdirs({"../sourcesdk-minimal/lib/public"})
+	filter({"system:linux","platforms:x86"})
+		libdirs({sdklibs.."/linux32"})
 
-	filter("platforms:x86_64")
-		libdirs({"../sourcesdk-minimal/lib/public/x64"})
+	filter({"system:linux","platforms:x86_64"})
+		libdirs({sdklibs.."/linux64"})
+
+	--filter("platforms:x86")
+	--	libdirs({sdklibs})
+
+	--filter("platforms:x86_64")
+	--	libdirs({sdklibs.."/x64"})
 
 	filter({})
 
@@ -79,19 +82,26 @@ project("vphysics")
 	filter("system:linux")
 		defines({"_LIB", "LINUX"})
 		buildoptions { "-fpic", "-fno-semantic-interposition" }
+		links({"pthread","dl"})
+
+	filter({"platforms:x86","system:linux"})
+		postbuildcommands({"{COPY} %{cfg.targetdir}/vphysics.so "..testserver.."/bin/linux32"})
+
+	filter({"platforms:x86_64","system:linux"})
+		buildoptions { "-march=native" }
 
 	filter({})
 	debugargs({"-nomaster","-debug","-console","-dev","+gamemode sandbox","+map gm_flatgrass"})
 
-	IncludeIVP_hk_base()
-	IncludeIVP_hk_math()
-	IncludeIVPPhysics()
-	IncludeIVP_havana_constraints()
-	IncludeIVPCompactBuilder()
 	IncludeSDKInterfaces()
 	IncludeSDKTier0()
 	IncludeSDKTier1()
 	IncludeSDKMathlib()
+	IncludeIVPCompactBuilder()
+	IncludeIVP_havana_constraints()
+	IncludeIVPPhysics()
+	IncludeIVP_hk_math()
+	IncludeIVP_hk_base()
 --
 	--filter({"system:windows","platforms:x86"})
 
