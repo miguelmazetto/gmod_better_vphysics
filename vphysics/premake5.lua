@@ -1,3 +1,5 @@
+local testserver = _SCRIPT_DIR .. "/../testserver"
+
 project("vphysics")
 	_project = project()
 	_project.serverside = true
@@ -57,12 +59,19 @@ project("vphysics")
 		"physics_virtualmesh.cpp",
 		"trace.cpp",
 		"vcollide_parse.cpp",
-		"vphysics_saverestore.cpp"
+		"vphysics_saverestore.cpp",
+		"*.h"
 	})
-	vpaths({["Source files/*"] = "*.cpp"})
-	
+	vpaths({["Source files/*"] = {"*.cpp","../sourcesdk-minimal/public/filesystem_helpers.cpp"}})
+	vpaths({["Header files/*"] = "*.h"})
+
+	filter("system:windows")
+		debuggertype("NativeOnly")
+
 	filter({"platforms:x86","system:windows"})
 		defines({"COMPILER_MSVC32","WIN32"})
+		postbuildcommands({"{COPY} %{cfg.targetdir}/vphysics.dll "..testserver.."/bin"})
+		debugcommand(testserver.."/srcds.exe")
 
 	filter({"platforms:x86_64","system:windows"})
 		defines({"COMPILER_MSVC64","WIN32","WIN64"})
@@ -72,6 +81,7 @@ project("vphysics")
 		buildoptions { "-fpic", "-fno-semantic-interposition" }
 
 	filter({})
+	debugargs({"-nomaster","-debug","-console","-dev","+gamemode sandbox","+map gm_flatgrass"})
 
 	IncludeIVP_hk_base()
 	IncludeIVP_hk_math()
@@ -81,12 +91,8 @@ project("vphysics")
 	IncludeSDKInterfaces()
 	IncludeSDKTier0()
 	IncludeSDKTier1()
-	--IncludeSDKTier2()
 	IncludeSDKMathlib()
-	--IncludeSDKvstdlib()
-
-	--filter("system:windows")
-	--	debuggertype("NativeOnly")
 --
 	--filter({"system:windows","platforms:x86"})
+
 	--	debugcommand('cp -f --reply=yes D:/UserFiles/repos/gmod_better_vphysics/projects/windows/vs2019/x86/Debug/vphysics.dll C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/bin && C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/bin/gmod.exe')

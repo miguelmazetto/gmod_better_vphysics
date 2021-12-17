@@ -100,3 +100,8 @@ workspace("gmod_better_vphysics")
 		strictaliasing("Level3")
 
 	include("vphysics")
+	filter({})	
+	
+workspace("gmod_better_vphysics")
+
+	startproject("vphysics")

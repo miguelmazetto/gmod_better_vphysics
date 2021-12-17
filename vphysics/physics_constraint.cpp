@@ -655,7 +655,7 @@ void CPhysicsConstraint::InitRagdoll( IVP_Environment *pEnvironment, CPhysicsCon
 		InitHinge( pEnvironment, constraint_group, hinge );
 		return;
 	}
-	
+
 	m_constraintType = CONSTRAINT_RAGDOLL;
 
 	hk_Rigid_Body *ref = (hk_Rigid_Body*)m_pObjReference->GetObject();
@@ -756,7 +756,7 @@ void CPhysicsConstraint::InitHinge( IVP_Environment *pEnvironment, CPhysicsConst
 	builder.set_axis_perp_os( 0, vec(axisPerpIVP_os) );
 	ConvertDirectionToIVP( hinge.attachedPerpAxisDirection, axisPerpIVP_os );
 	builder.set_axis_perp_os( 1, vec(axisPerpIVP_os) );
-	
+
 	builder.set_tau( hinge.constraint.strength );
 	// torque is an impulse radians/sec * inertia
 	if ( hinge.hingeAxis.torque != 0 )

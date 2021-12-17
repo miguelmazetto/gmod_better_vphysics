@@ -502,50 +502,93 @@ int CPhysicsSurfaceProps::ParseSurfaceData( const char *pFileName, const char *p
 				{
 					prop.data.audio.hardThreshold = atof(value);
 				}
+				// mmz start
+				else if (!strcmpi(key, "highPitchOcclusion"))
+				{
+					prop.data.audio.highPitchOcclusion = atof(value);
+				}
+				else if (!strcmpi(key, "midPitchOcclusion"))
+				{
+					prop.data.audio.midPitchOcclusion = atof(value);
+				}
+				else if (!strcmpi(key, "lowPitchOcclusion"))
+				{
+					prop.data.audio.lowPitchOcclusion = atof(value);
+				}
+				// mmz end
 				// sound names
-				else if ( !strcmpi( key, "stepleft" ) )
+				// lwss: rework these for csgo
+				// mmz: but needed for gmod as well
+				else if (!strcmpi(key, "stepleft"))
 				{
-					prop.data.sounds.stepleft = m_strings.AddString( value );
+					//prop.data.sounds.stepleft = m_strings.AddString( value );
+					prop.data.sounds.runStepLeft = m_strings.AddString(value);
 				}
-				else if ( !strcmpi( key, "stepright" ) )
+				else if (!strcmpi(key, "stepright"))
 				{
-					prop.data.sounds.stepright = m_strings.AddString( value );
+					//prop.data.sounds.stepright = m_strings.AddString( value );
+					prop.data.sounds.runStepRight = m_strings.AddString(value);
 				}
-				else if ( !strcmpi( key, "impactsoft" ) )
+				else if (!strcmpi(key, "walkLeft"))
 				{
-					prop.data.sounds.impactSoft = m_strings.AddString( value );
+					prop.data.sounds.walkStepLeft = m_strings.AddString(value);
 				}
-				else if ( !strcmpi( key, "impacthard" ) )
+				else if (!strcmpi(key, "walkRight"))
 				{
-					prop.data.sounds.impactHard = m_strings.AddString( value );
+					prop.data.sounds.walkStepRight = m_strings.AddString(value);
 				}
-				else if ( !strcmpi( key, "scrapesmooth" ) )
+				else if (!strcmpi(key, "runLeft"))
 				{
-					prop.data.sounds.scrapeSmooth = m_strings.AddString( value );
+					prop.data.sounds.runStepLeft = m_strings.AddString(value);
 				}
-				else if ( !strcmpi( key, "scraperough" ) )
+				else if (!strcmpi(key, "runRight"))
 				{
-					prop.data.sounds.scrapeRough = m_strings.AddString( value );
+					prop.data.sounds.runStepRight = m_strings.AddString(value);
 				}
-				else if ( !strcmpi( key, "bulletimpact" ) )
+				else if (!strcmpi(key, "penetrationmodifier"))
 				{
-					prop.data.sounds.bulletImpact = m_strings.AddString( value );
+					prop.data.game.penetrationModifier = m_strings.AddString(value);
 				}
-				else if ( !strcmpi( key, "break" ) )
+				else if (!strcmpi(key, "damagemodifier"))
 				{
-					prop.data.sounds.breakSound = m_strings.AddString( value );
+					prop.data.game.damageModifier = m_strings.AddString(value);
 				}
-				else if ( !strcmpi( key, "strain" ) )
+				// lwss end
+				else if (!strcmpi(key, "impactsoft"))
 				{
-					prop.data.sounds.strainSound = m_strings.AddString( value );
+					prop.data.sounds.impactSoft = m_strings.AddString(value);
 				}
-				else if ( !strcmpi( key, "rolling" ) )
+				else if (!strcmpi(key, "impacthard"))
 				{
-					prop.data.sounds.rolling = m_strings.AddString( value );
+					prop.data.sounds.impactHard = m_strings.AddString(value);
 				}
-				else if ( !strcmpi( key, "gamematerial" ) )
+				else if (!strcmpi(key, "scrapesmooth"))
 				{
-					if ( strlen(value) == 1 && !V_isdigit( value[0]) )
+					prop.data.sounds.scrapeSmooth = m_strings.AddString(value);
+				}
+				else if (!strcmpi(key, "scraperough"))
+				{
+					prop.data.sounds.scrapeRough = m_strings.AddString(value);
+				}
+				else if (!strcmpi(key, "bulletimpact"))
+				{
+					prop.data.sounds.bulletImpact = m_strings.AddString(value);
+				}
+				else if (!strcmpi(key, "break"))
+				{
+					prop.data.sounds.breakSound = m_strings.AddString(value);
+				}
+				else if (!strcmpi(key, "strain"))
+				{
+					prop.data.sounds.strainSound = m_strings.AddString(value);
+				}
+				else if (!strcmpi(key, "roll"))
+				{
+					prop.data.sounds.rolling = m_strings.AddString(value);
+				}
+				else if (!strcmpi(key, "gamematerial"))
+				{
+					if (strlen(value) == 1 && !V_isdigit(value[0]))
 					{
 						prop.data.game.material = toupper(value[0]);
 					}
@@ -554,7 +597,7 @@ int CPhysicsSurfaceProps::ParseSurfaceData( const char *pFileName, const char *p
 						prop.data.game.material = atoi(value);
 					}
 				}
-				else if ( !strcmpi( key, "dampening" ) )
+				else if (!strcmpi(key, "dampening"))
 				{
 					prop.data.physics.dampening = atof(value);
 				}

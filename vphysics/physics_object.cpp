@@ -69,6 +69,8 @@ static float AngDragIntegral( float invInertia, float l, float w, float h )
 
 CPhysicsObject::CPhysicsObject( void )
 {
+	Msg("--here");
+
 #ifdef _WIN32
 	void *pData = ((char *)this) + sizeof(void *); // offset beyond vtable
 	int dataSize = sizeof(*this) - sizeof(void *);
