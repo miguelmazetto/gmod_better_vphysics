@@ -123,7 +123,7 @@ IVP_BOOL IVP_Clustering_Visualizer_Shortrange::recursively_traverse_cluster(cons
 	// now check bounding box against bounding box.
 	this->stats_n_box_collisiontests++;
 
-	register IVP_FLOAT work = IVP_COMPACT_BOUNDINGBOX_STEP_SIZE * node->radius;
+	IVP_FLOAT work = IVP_COMPACT_BOUNDINGBOX_STEP_SIZE * node->radius;
 
 	if ( IVP_Inline_Math::fabsd(distance_between_centers.k[0]) >= (node->box_sizes[0] * work + this->intruder_radius) ) goto abort;
 	if ( IVP_Inline_Math::fabsd(distance_between_centers.k[1]) >= (node->box_sizes[1] * work + this->intruder_radius) ) goto abort;

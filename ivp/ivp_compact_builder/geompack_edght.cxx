@@ -15,7 +15,7 @@ void IVP_Geompack::edght_(
 			  int	*w
 			 ) {
 
-    register int bptr, newp, k, aa, bb, ptr;
+    int bptr, newp, k, aa, bb, ptr;
 
     int *edge = this->g_intworkarray;
     int max_n_edges = (int)(this->size_intworkarray / 4)-1; // max_n_edges = size of int work array / 4 because we have to store 4 values for each edge!

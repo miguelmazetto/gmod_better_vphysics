@@ -62,7 +62,7 @@ void IVP_SurfaceManager_Polygon_Solver::traverse_cluster(const IVP_Compact_Ledge
     
 #if 1
     // sphere collision detected! now check bounding box against bounding box.
-    register IVP_FLOAT work2 = work * node->radius;
+    IVP_FLOAT work2 = work * node->radius;
 
     if ( IVP_Inline_Math::fabsd(dist_vec.k[0]) >= (node->box_sizes[0] * work2 + radius) ) {
 	IVP_IF(0) {

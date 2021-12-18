@@ -227,7 +227,7 @@ void *IVP_U_Memory::get_memc(unsigned int groesse)
 {
 //	if (groesse & 0x7) *(int *)0 = 0;
     void *neubeginn=get_mem(groesse);
-    register long *z=(long*)neubeginn;
+    long *z=(long*)neubeginn;
     memset((char *)z,0,groesse);
     return(neubeginn);
 }

@@ -41,6 +41,7 @@ workspace("gmod_better_vphysics")
 	rtti("On")
 	vectorextensions("SSE2")
 	targetprefix("")
+	--toolset "clang"
 
 	configurations({"Debug", "ReleaseWithSymbols", "Release"})
 	targetdir("%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}")
@@ -85,7 +86,7 @@ workspace("gmod_better_vphysics")
 
 	filter("system:windows")
 		cdialect("C11")
-		cppdialect("C++17")
+		cppdialect("C++14")
 		staticruntime("On")
 		defaultplatform("x86")
 		defines({
