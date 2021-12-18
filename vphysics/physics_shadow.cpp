@@ -162,6 +162,40 @@ public:
 		IVP_Core *pCore = pivp->get_core();
 		return pCore->temporarily_unmovable ? true : false;
 	}
+	//lwss add missing func
+    // returns bitfield e.g. 0 (no contacts), 1 (has physics contact), 2 (contact matching nGameFlags), 3 (both 1 & 2)
+    virtual uint32 GetContactState( uint16 nGameFlags )
+    {
+	    uint32 state = 0;
+        IVP_Real_Object *pivp = m_pObject->GetObject();
+        if ( !pivp->flags.collision_detection_enabled )
+            return state;
+
+        IVP_Synapse_Friction *pfriction = pivp->get_first_friction_synapse();
+        while ( pfriction )
+        {
+            extern IVP_Real_Object *GetOppositeSynapseObject( IVP_Synapse_Friction *pfriction );
+
+            IVP_Real_Object *pobj = GetOppositeSynapseObject( pfriction );
+            if ( pobj->flags.collision_detection_enabled )
+            {
+                // skip if this is a static object
+                if ( !pobj->get_core()->physical_unmoveable && !pobj->get_core()->pinned )
+                {
+                    CPhysicsObject *pPhys = static_cast<CPhysicsObject *>(pobj->client_data);
+                    int v7 = state | ( pPhys->IsControlledByGame() ^ 1 );
+                    state = v7 | 2;
+                    if( !(pPhys->GetGameFlags() & nGameFlags) )
+                        state = v7;
+                }
+            }
+
+            pfriction = pfriction->get_next();
+        }
+
+        return state;
+    }
+	//lwss end
 
 	void ForceTeleportToCurrentPosition()
 	{

@@ -130,8 +130,13 @@ public:
 	virtual void DebugCheckContacts(void);
 
 	// Save/restore
-	bool Save( const physsaveparams_t &params  );
-	void PreRestore( const physprerestoreparams_t &params );
+
+	// mmz start
+	void			PreSave(const physpresaverestoreparams_t& params);
+	bool			Save(const physsaveparams_t& params);
+	void			PostSave();
+	// mmz end
+	void PreRestore( const physpresaverestoreparams_t &params );
 	bool Restore( const physrestoreparams_t &params );
 	void PostRestore();
 	void PhantomAdd( CPhysicsObject *pObject );
@@ -144,6 +149,20 @@ public:
 	IPhysicsCollisionEvent *GetCollisionEventHandler();
 	// a constraint is being disabled - report the game DLL as "broken"
 	void NotifyConstraintDisabled( IPhysicsConstraint *pConstraint );
+
+	//lwss add
+    virtual void   SetAlternateGravity( const Vector &gravityVector );
+    virtual void   GetAlternateGravity( Vector *pGravityVector ) const;
+    virtual float  GetDeltaFrameTime( int maxTicks ) const;
+    virtual void   ForceObjectsToSleep( IPhysicsObject **pList, int listCount );
+    virtual void   SetPredicted( bool bPredicted ); //Interaction with this system and it's objects may not always march forward, sometimes it will get/set data in the past.
+    virtual bool   IsPredicted( void );
+    virtual void   SetPredictionCommandNum( int iCommandNum ); //what command the client is working on right now
+    virtual int    GetPredictionCommandNum( void );
+    virtual void   DoneReferencingPreviousCommands( int iCommandNum ); //won't need data from commands before this one any more
+    virtual void   RestorePredictedSimulation( void ); //called to restore results from a previous simulation with the same predicted timestamp set
+    virtual void   DestroyCollideOnDeadObjectFlush( CPhysCollide * );
+	//lwss end
 
 private:
 	IVP_Environment					*m_pPhysEnv;
@@ -164,6 +183,10 @@ private:
 	bool							m_queueDeleteObject;
 	bool							m_fixedTimestep;
 	bool							m_enableConstraintNotify;
+	//lwss add
+    bool                            m_predictionEnabled; //+273 bytes in debug bin
+    int                             m_predictionCmdNum; //+69 bytes
+	//lwss end
 };
 
 extern IPhysicsEnvironment *CreatePhysicsEnvironment( void );

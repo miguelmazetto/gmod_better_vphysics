@@ -150,6 +150,12 @@ public:
 		return m_strings.String(name);
 	}
 
+	// mmz start
+	ISaveRestoreOps* GetMaterialIndexDataOps() const
+	{
+		return MaterialIndexDataOps();
+	}
+	// mmz end
 private:
 	const CSurface	*GetInternalSurface( int materialIndex ) const;
 	CSurface	*GetInternalSurface( int materialIndex );
@@ -387,7 +393,6 @@ int CPhysicsSurfaceProps::GetIVPMaterialIndex( const IVP_Material *pIVP ) const
 
 	return -1;
 }
-
 
 void CPhysicsSurfaceProps::CopyPhysicsProperties( CSurface *pOut, int baseIndex )
 {

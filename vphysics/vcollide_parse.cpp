@@ -11,6 +11,7 @@
 
 #include "tier1/strtools.h" 
 #include "vphysics/constraints.h"
+#include "vphysics/collision_set.h"
 #include "vphysics/vehicles.h"
 #include "filesystem_helpers.h"
 #include "bspfile.h"

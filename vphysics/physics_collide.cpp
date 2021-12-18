@@ -30,6 +30,8 @@
 #include "mathlib/polyhedron.h"
 #include "tier1/byteswap.h"
 
+#include <map> //mmz add
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -103,7 +105,8 @@ public:
 	// begins parsing a vcollide.  NOTE: This keeps pointers to the text
 	// If you delete the text and call members of IVPhysicsKeyParser, it will crash
 	virtual IVPhysicsKeyParser	*VPhysicsKeyParserCreate( const char *pKeyData );
-	// Free the parser created by VPhysicsKeyParserCreate
+    virtual IVPhysicsKeyParser *VPhysicsKeyParserCreate( vcollide_t *pVCollide ); // lwss - NEW for csgo
+    // Free the parser created by VPhysicsKeyParserCreate
 	virtual void			VPhysicsKeyParserDestroy( IVPhysicsKeyParser *pParser );
 
 	// creates a list of verts from a collision mesh
@@ -118,6 +121,16 @@ public:
 	virtual IPhysicsCollision *ThreadContextCreate( void );
 	virtual void			ThreadContextDestroy( IPhysicsCollision *pThreadContex );
 	virtual unsigned int	ReadStat( int statID ) { return 0; }
+	// lwss - ADDED, these are all new for CSGO
+    virtual float           CollideGetRadius( const CPhysCollide *pCollide );
+    virtual void			*VCollideAllocUserData( vcollide_t *pVCollide, size_t userDataSize );
+    virtual void			VCollideFreeUserData( vcollide_t *pVCollide );
+    virtual void			VCollideCheck( vcollide_t *pVCollide, const char *pName );
+    virtual bool			TraceBoxAA( const Ray_t &ray, const CPhysCollide *pCollide, trace_t *ptr );
+	// lwss end
+	// mmz start
+	virtual void			DuplicateAndScale(vcollide_t* pOut, const vcollide_t* pIn, float flScale);
+	// mmz end
 	virtual void			CollideGetMassCenter( CPhysCollide *pCollide, Vector *pOutMassCenter );
 	virtual void			CollideSetMassCenter( CPhysCollide *pCollide, const Vector &massCenter );
 
@@ -1065,7 +1078,8 @@ static void LedgeInsidePoint( IVP_Compact_Ledge *pLedge, Vector& out )
 //			p3 - 
 // Output : float (volume in units^3)
 //-----------------------------------------------------------------------------
-// lwss: already defined in mathlib
+
+//lwss - comment these functions out because they are in mathlib with same name and same code.
 //static float TetrahedronVolume( const Vector &p0, const Vector &p1, const Vector &p2, const Vector &p3 )
 //{
 //	Vector a, b, c, cross;
@@ -1081,8 +1095,6 @@ static void LedgeInsidePoint( IVP_Compact_Ledge *pLedge, Vector& out )
 //		return -volume;
 //	return volume;
 //}
-//
-//
 //static float TriangleArea( const Vector &p0, const Vector &p1, const Vector &p2 )
 //{
 //	Vector e0 = p1 - p0;
@@ -1092,6 +1104,8 @@ static void LedgeInsidePoint( IVP_Compact_Ledge *pLedge, Vector& out )
 //	CrossProduct( e0, e1, cross );
 //	return 0.5 * cross.Length();
 //}
+//lwss end
+
 
 
 //-----------------------------------------------------------------------------
@@ -1691,6 +1705,13 @@ IVPhysicsKeyParser *CPhysicsCollision::VPhysicsKeyParserCreate( const char *pKey
 	return CreateVPhysicsKeyParser( pKeyData );
 }
 
+//lwss - added this
+IVPhysicsKeyParser *CPhysicsCollision::VPhysicsKeyParserCreate(vcollide_t *pVCollide)
+{
+    return CreateVPhysicsKeyParser( pVCollide->pKeyValues );
+}
+//lwss end
+
 // Free the parser created by VPhysicsKeyParserCreate
 void CPhysicsCollision::VPhysicsKeyParserDestroy( IVPhysicsKeyParser *pParser )
 {
@@ -1706,7 +1727,58 @@ void CPhysicsCollision::ThreadContextDestroy( IPhysicsCollision *pThreadContext 
 {
 }
 
+// lwss - Recreated these functions
+float CPhysicsCollision::CollideGetRadius(const CPhysCollide *pCollide)
+{
+    return pCollide->GetSphereRadius();
+}
 
+// modified by mmz
+static std::map<vcollide_t*, void*> userdataMap;
+void* CPhysicsCollision::VCollideAllocUserData(vcollide_t *pVCollide, size_t userDataSize)
+{
+    void *ret = nullptr;
+
+    if( userdataMap[pVCollide] )
+    {
+        g_pMemAlloc->Free(userdataMap[pVCollide]);
+		userdataMap.erase(pVCollide);
+    }
+
+    if( userDataSize )
+    {
+        ret = g_pMemAlloc->Alloc( userDataSize );
+		userdataMap[pVCollide] = ret;
+    }
+    return ret;
+}
+
+void CPhysicsCollision::VCollideFreeUserData(vcollide_t *pVCollide)
+{
+    if(userdataMap[pVCollide])
+    {
+		g_pMemAlloc->Free(userdataMap[pVCollide]);
+		userdataMap.erase(pVCollide);
+    }
+}
+void CPhysicsCollision::VCollideCheck( vcollide_t *pVCollide, const char *pName )
+{
+    Warning("LWSS did not implement CPhysicsCollision::VCollideCheck()!\n");
+}
+bool CPhysicsCollision::TraceBoxAA( const Ray_t &ray, const CPhysCollide *pCollide, trace_t *ptr )
+{
+    Warning( "LWSS did not implement CPhysicsCollision::TraceBoxAA - it's only used in Portal!\n" );
+    return false;
+}
+// lwss end
+
+// mmz start
+void CPhysicsCollision::DuplicateAndScale(vcollide_t* pOut, const vcollide_t* pIn, float flScale)
+{
+	*pOut = *pIn;
+
+}
+// mmz end
 void CPhysicsCollision::CollideGetMassCenter( CPhysCollide *pCollide, Vector *pOutMassCenter )
 {
 	*pOutMassCenter = pCollide->GetMassCenter();

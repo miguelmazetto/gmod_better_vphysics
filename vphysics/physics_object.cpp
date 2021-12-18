@@ -69,8 +69,6 @@ static float AngDragIntegral( float invInertia, float l, float w, float h )
 
 CPhysicsObject::CPhysicsObject( void )
 {
-	Msg("--here");
-
 #ifdef _WIN32
 	void *pData = ((char *)this) + sizeof(void *); // offset beyond vtable
 	int dataSize = sizeof(*this) - sizeof(void *);
@@ -320,11 +318,15 @@ void CPhysicsObject::RecheckCollisionFilter()
 	m_callbacks &= ~CALLBACK_ENABLING_COLLISION;
 }
 
-void CPhysicsObject::RecheckContactPoints()
+void CPhysicsObject::RecheckContactPoints(bool bSearchForNewContacts)
 {
+    if( bSearchForNewContacts )
+        m_pObject->force_grow_friction_system();
+
 	IVP_Environment *pEnv = m_pObject->get_environment();
 	IVP_Collision_Filter *coll_filter = pEnv->get_collision_filter();
 	IPhysicsFrictionSnapshot *pSnapshot = CreateFrictionSnapshot();
+
 	while ( pSnapshot->IsValid() )
 	{
 		CPhysicsObject *pOther = static_cast<CPhysicsObject *>(pSnapshot->GetObject(1));
@@ -1274,6 +1276,16 @@ float CPhysicsObject::GetSphereRadius() const
 	return ConvertDistanceToHL( m_pObject->to_ball()->get_radius() );
 }
 
+//lwss add
+void CPhysicsObject::SetSphereRadius(float radius)
+{
+    if ( m_collideType != COLLIDE_BALL )
+        return;
+
+    m_pObject->set_extra_radius( radius * g_PhysicsUnits.unitScaleMeters );
+}
+//lwss end
+
 float CPhysicsObject::CalculateLinearDrag( const Vector &unitDirection ) const
 {
 	IVP_U_Float_Point ivpDir;
@@ -1882,6 +1894,50 @@ void CPhysicsObject::InitFromTemplate( CPhysicsEnvironment *pEnvironment, void *
 	m_pShadow = NULL;
 }
 
+//lwss add
+void CPhysicsObject::SetUseAlternateGravity(bool bSet)
+{
+    //lwss hack
+    //Warning("LWSS didn't implement SetUseAlternateGravity!");
+}
+
+void CPhysicsObject::SetCollisionHints(uint32 collisionHints)
+{
+    m_collisionHints = collisionHints;
+}
+
+uint32 CPhysicsObject::GetCollisionHints() const
+{
+    return m_collisionHints;
+}
+
+IPredictedPhysicsObject* CPhysicsObject::GetPredictedInterface() const
+{
+    // only relevant for PredictedPhysicsObjects
+    return nullptr;
+}
+
+void CPhysicsObject::SyncWith(IPhysicsObject *pOther)
+{
+    bool otherColl = pOther->IsCollisionEnabled();
+    bool otherGrav = pOther->IsGravityEnabled();
+    bool otherDrag = pOther->IsDragEnabled();
+    bool otherMotion = pOther->IsMotionEnabled();
+
+    bool thisColl = this->IsCollisionEnabled();
+    bool thisGrav = this->IsGravityEnabled();
+    bool thisDrag = this->IsDragEnabled();
+    bool thisMotion = this->IsMotionEnabled();
+
+    if( thisColl != otherColl || thisGrav != otherGrav || thisDrag != otherDrag || ( (otherMotion ^ thisMotion) != 0 ) )
+    {
+        this->EnableCollisions( otherColl );
+        this->EnableGravity( otherGrav );
+        this->EnableDrag( otherDrag );
+        this->EnableMotion( otherMotion );
+    }
+}
+//lwss end
 
 bool SavePhysicsObject( const physsaveparams_t &params, CPhysicsObject *pObject )
 {

@@ -1975,6 +1975,105 @@ void CPhysicsEnvironment::ReadStats( physics_stats_t *pOutput )
 	}
 }
 
+//lwss add
+void CPhysicsEnvironment::SetAlternateGravity(const Vector &gravityVector)
+{
+    //lwss hack - This is for ragdoll specific gravity. Unimplemented - it'll be the same as regular gravity.
+    //float y = HL2IVP(gravityVector.y);
+    //float x = HL2IVP( gravityVector.x);
+    //float z = -HL2IVP( gravityVector.z);
+    //IVP_U_Point gravity( x, y, z );
+    ////lwss hack - this requires going into IVP and implementing alternate gravity checks all through-out the code.
+    //Warning("LWSS Hack - using standard gravity in IVP instead of alternate(unimplemented)\n");
+    //m_pPhysEnv->get_gravity_controller()->set_standard_gravity( &gravity );
+}
+
+void CPhysicsEnvironment::GetAlternateGravity(Vector *pGravityVector) const
+{
+    //lwss hack - again, this doesn't use the alternate gravity. Seems like it's used for ragdolls, they might be messed up.
+    const IVP_U_Point *gravity = m_pPhysEnv->get_gravity();
+    pGravityVector->x = IVP2HL( gravity->k[0] );
+    pGravityVector->y = IVP2HL( gravity->k[1] );
+    pGravityVector->z = -IVP2HL( gravity->k[2] );
+}
+
+float CPhysicsEnvironment::GetDeltaFrameTime(int maxTicks) const
+{
+    // this is fully accurate, the IDA king has spoken.
+    double timeDiff = m_pPhysEnv->get_next_PSI_time().get_time() - m_pPhysEnv->get_current_time().get_time();
+    return float( (float(maxTicks) * m_pPhysEnv->get_delta_PSI_time()) + timeDiff );
+}
+
+void CPhysicsEnvironment::ForceObjectsToSleep(IPhysicsObject **pList, int listCount)
+{
+    // list size up to 1024, then we dont care I guess
+    int listEnd = MIN( listCount, 1024 );
+
+    for( int i = 0; i < listEnd; i++ )
+    {
+        IPhysicsObject *object = pList[i];
+        //TODO: finish
+    }
+}
+
+void CPhysicsEnvironment::SetPredicted(bool bPredicted)
+{
+    // This check is a little different from retail
+    if( m_objects.Count() > 0 || m_deadObjects.Count() > 0 )
+    {
+        Error( "Predicted physics are not designed to change once objects have been made.\n");
+        /* Exit */
+    }
+
+    if( bPredicted )
+        Warning("WARNING: Kisak physics does NOT have prediction!\n");
+
+    m_predictionEnabled = bPredicted;
+}
+
+bool CPhysicsEnvironment::IsPredicted()
+{
+    //lwss hack - I didn't redo the whole physics prediction.
+    // return false so it doesn't try to use it.
+    return false;
+    //return m_predictionEnabled;
+}
+
+void CPhysicsEnvironment::SetPredictionCommandNum(int iCommandNum)
+{
+    if( !m_predictionEnabled )
+        return;
+
+    //lwss hack - didn't reimplement the entire physics prediction system.
+    m_predictionCmdNum = iCommandNum;
+    Warning("LWSS didn't implement SetPredictionCommandNum\n");
+}
+
+int CPhysicsEnvironment::GetPredictionCommandNum()
+{
+    return m_predictionCmdNum;
+}
+
+void CPhysicsEnvironment::DoneReferencingPreviousCommands(int iCommandNum)
+{
+    //lwss hack
+    //Warning("LWSS didn't implement DoneReferencingPreviousCommands\n");
+}
+
+void CPhysicsEnvironment::RestorePredictedSimulation()
+{
+    //lwss hack
+    Warning("LWSS didn't implement RestorePredictedSimulation\n");
+}
+
+void CPhysicsEnvironment::DestroyCollideOnDeadObjectFlush(CPhysCollide *)
+{
+    //lwss hack
+    Warning("LWSS didn't implement DestroyCollideOnDeadObjectFlush\n");
+    // m_lastObjectThisTick // +20 bytes
+}
+//lwss end
+
 void CPhysicsEnvironment::ClearStats()
 {
 	IVP_Statistic_Manager *stats = m_pPhysEnv->get_statistic_manager();

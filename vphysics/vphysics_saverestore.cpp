@@ -36,6 +36,17 @@ static bool NoPhysSaveFunc( const physsaveparams_t &params, void * )
 	return false;
 }
 
+// mmz start
+void CPhysicsEnvironment::PreSave(const physpresaverestoreparams_t& params)
+{
+
+}
+void CPhysicsEnvironment::PostSave()
+{
+
+}
+// mmz end
+
 bool CPhysicsEnvironment::Save( const physsaveparams_t &params )
 {
 	const PhysInterfaceId_t type = params.type;
@@ -74,13 +85,13 @@ CVPhysPtrSaveRestoreOps::CVPhysPtrSaveRestoreOps()
 }
 
 
-void CPhysicsEnvironment::PreRestore( const physprerestoreparams_t &params )
+void CPhysicsEnvironment::PreRestore( const physpresaverestoreparams_t &params )
 {
 	g_VPhysPtrSaveRestoreOps.PreRestore();
-	for ( int i = 0; i < params.recreatedObjectCount; i++ )
+	/*for (int i = 0; i < params.recreatedObjectCount; i++)
 	{
 		AddPtrAssociation( params.recreatedObjectList[i].pOldObject, params.recreatedObjectList[i].pNewObject );
-	}
+	}*/
 }
 
 bool CPhysicsEnvironment::Restore( const physrestoreparams_t &params )

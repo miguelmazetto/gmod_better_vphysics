@@ -114,7 +114,7 @@ public:
 	void			Wake();
 	void			Sleep();
 	void			RecheckCollisionFilter();
-	void			RecheckContactPoints();
+	void			RecheckContactPoints(bool bSearchForNewContacts = false); //lwss add bool for new version
 
 	void			SetMass( float mass );
 	float			GetMass( void ) const;
@@ -135,6 +135,7 @@ public:
 	void			SetContents( unsigned int contents );
 
 	float			GetSphereRadius() const;
+	void            SetSphereRadius(float radius); // lwss add
 	Vector			GetMassCenterLocalSpace() const;
 	float			GetEnergy() const;
 
@@ -215,6 +216,14 @@ public:
 	CPhysicsEnvironment	*GetVPhysicsEnvironment();
 	const CPhysicsEnvironment	*GetVPhysicsEnvironment() const;
 
+	//lwss add
+    void			SetUseAlternateGravity( bool bSet );
+    void			SetCollisionHints( uint32 collisionHints );
+    uint32			GetCollisionHints() const;
+    IPredictedPhysicsObject *GetPredictedInterface( void ) const ;
+    void			SyncWith( IPhysicsObject *pOther );
+	//lwss end
+
 private:
 	// NOTE: Local to vphysics, used to save/restore shadow controller
 	void			RestoreShadowController( IPhysicsShadowController *pShadowController );
@@ -261,6 +270,10 @@ private:
 	float			m_buoyancyRatio;
 	float			m_dragCoefficient;
 	float			m_angDragCoefficient;
+
+	//lwss add
+    uint32          m_collisionHints;
+	//lwss end
 
 	friend CPhysicsObject *CreatePhysicsObject( CPhysicsEnvironment *pEnvironment, const CPhysCollide *pCollisionModel, int materialIndex, const Vector &position, const QAngle& angles, objectparams_t *pParams, bool isStatic );
 	friend bool CPhysicsEnvironment::TransferObject( IPhysicsObject *pObject, IPhysicsEnvironment *pDestinationEnvironment ); //need direct access to m_pShadow for Portal mod's physics object transfer system
