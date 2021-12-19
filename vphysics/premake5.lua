@@ -73,8 +73,6 @@ project("vphysics")
 
 	filter({"platforms:x86","system:windows"})
 		defines({"COMPILER_MSVC32","WIN32"})
-		postbuildcommands({"{COPY} %{cfg.targetdir}/vphysics.dll "..testserver.."/bin"})
-		debugcommand(testserver.."/srcds.exe")
 
 	filter({"platforms:x86_64","system:windows"})
 		defines({"COMPILER_MSVC64","WIN32","WIN64"})
@@ -84,15 +82,27 @@ project("vphysics")
 		buildoptions { "-fpic", "-fno-semantic-interposition" }
 		links({"pthread","dl"})
 
-	filter({"platforms:x86","system:linux"})
-		postbuildcommands({"{COPY} %{cfg.targetdir}/vphysics.so "..testserver.."/bin/linux32"})
-
 	filter({"platforms:x86_64","system:linux"})
 		buildoptions { "-march=native" }
+
+	--Debug
+	if os.isdir(testserver) then
+		filter({"platforms:x86","system:windows"})
+			postbuildcommands({"{COPY} %{cfg.targetdir}/vphysics.dll "..testserver.."/bin"})
+			debugcommand(testserver.."/srcds.exe")
+
+		filter({"platforms:x86_64","system:windows"})
+			postbuildcommands({"{COPY} %{cfg.targetdir}/vphysics.dll "..testserver.."/bin/win64"})
+			debugcommand(testserver.."/srcds_win64.exe")
+
+		filter({"platforms:x86","system:linux"})
+			postbuildcommands({"{COPY} %{cfg.targetdir}/vphysics.so "..testserver.."/bin/linux32"})
+	end
 
 	filter({})
 	debugargs({"-nomaster","-debug","-console","-dev","+gamemode sandbox","+map gm_flatgrass"})
 
+	--although this will not matter in windows, the order of these is important for linux
 	IncludeSDKInterfaces()
 	IncludeSDKTier0()
 	IncludeSDKTier1()

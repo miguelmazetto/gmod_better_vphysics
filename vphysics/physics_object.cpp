@@ -1553,13 +1553,14 @@ CPhysicsObject *CreatePhysicsObject( CPhysicsEnvironment *pEnvironment, const CP
 
 	IVP_U_Matrix massCenterMatrix;
 	massCenterMatrix.init();
-	if ( pParams->massCenterOverride )
+
+	/*if (pParams->massCenterOverride)
 	{
 		IVP_U_Point center;
 		ConvertPositionToIVP( *pParams->massCenterOverride, center );
 		massCenterMatrix.shift_os( &center );
 		objectTemplate.mass_center_override = &massCenterMatrix;
-	}
+	}*/
 
 	CPhysicsObject *pObject = new CPhysicsObject();
 	short collideType;

@@ -144,7 +144,7 @@ void IVP_Compact_Ledge_Generator::generate_compact_ledge(uchar *mem)
 
     // some header info
     IVP_Compact_Ledge *c_ledge = (IVP_Compact_Ledge *)mem;
-    this->compact_ledge =  c_ledge;
+    this->compact_ledge = c_ledge;
     c_ledge->c_ledge_init();
     c_ledge->n_triangles = n_triangles;
     mem += sizeof(IVP_Compact_Ledge);
@@ -160,7 +160,8 @@ void IVP_Compact_Ledge_Generator::generate_compact_ledge(uchar *mem)
 
     // copy point info
     IVP_ASSERT(point_cnt == point_vec.len());
-    c_ledge->set_offset_ledge_points( (int)(mem - (uchar *)c_ledge) );
+	// mmz: fix 64bit
+    c_ledge->set_offset_ledge_points( (size_t)(mem - (uchar *)c_ledge) );
     for(i=0; i<point_cnt; i++){
 	IVP_Compact_Poly_Point *cpp = (IVP_Compact_Poly_Point *)mem;
 	cpp->hesse_val = 0.0f;

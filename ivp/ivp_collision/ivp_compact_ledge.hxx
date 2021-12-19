@@ -14,10 +14,10 @@
 #	include "ivu_vector.hxx"
 #endif
 
-#if defined(_MSC_VER)
-#include <BaseTsd.h>
-typedef SSIZE_T ssize_t;
-#endif
+//#if defined(_MSC_VER)
+//#include <BaseTsd.h>
+//typedef SSIZE_T ssize_t;
+//#endif
 
 class IVP_Compact_Triangle;
 
@@ -137,7 +137,7 @@ class IVP_Compact_Ledge {
 private:
     int c_point_offset; // byte offset from 'this' to (ledge) point array
     union {
-	ssize_t ledgetree_node_offset;
+    int ledgetree_node_offset;
 	int client_data;	// if indicates a non terminal ledge
     };
     unsigned int has_chilren_flag:2;
@@ -147,7 +147,7 @@ private:
     short n_triangles;
     short for_future_use;
 
-	inline void set_offset_ledge_points(int offset) { 
+	inline void set_offset_ledge_points(size_t offset) { 
 		IVP_ASSERT( (offset & 15) == 0 );
 		c_point_offset=offset; 
 	};
@@ -251,7 +251,7 @@ public:
 const IVP_Compact_Triangle *IVP_Compact_Edge::get_triangle() const
 {
     // mask 4 lowest adress bits to receive triangle
-    return (IVP_Compact_Triangle *)(((size_t)this) & 0xfffffff0);
+    return (IVP_Compact_Triangle *)(((size_t)this) & ~(size_t)0xf);
 }
 
 
