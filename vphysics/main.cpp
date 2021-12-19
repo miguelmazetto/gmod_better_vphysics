@@ -110,8 +110,8 @@ public:
 	virtual IPhysicsEnvironment *GetActiveEnvironmentByIndex( int index );
 	virtual IPhysicsObjectPairHash *CreateObjectPairHash();
 	virtual void DestroyObjectPairHash( IPhysicsObjectPairHash *pHash );
-	virtual IPhysicsCollisionSet *FindOrCreateCollisionSet(unsigned int id, int maxElementCount );//
-	virtual IPhysicsCollisionSet *FindCollisionSet(unsigned int id );//
+	virtual IPhysicsCollisionSet *FindOrCreateCollisionSet( uintptr_t id, int maxElementCount );
+	virtual IPhysicsCollisionSet *FindCollisionSet( uintptr_t id );
 	virtual void DestroyAllCollisionSets();
 
 private:
@@ -177,7 +177,7 @@ void CPhysicsInterface::DestroyObjectPairHash( IPhysicsObjectPairHash *pHash )
 // holds a cache of these by id.
 // NOTE: This is stuffed into vphysics.dll as a sneaky way of sharing the memory between
 // client and server in single player.  So you can't have different client/server rules.
-IPhysicsCollisionSet *CPhysicsInterface::FindOrCreateCollisionSet(unsigned int id, int maxElementCount )
+IPhysicsCollisionSet *CPhysicsInterface::FindOrCreateCollisionSet( uintptr_t id, int maxElementCount )
 {
 	if ( !m_pCollisionSetHash )
 	{
@@ -196,7 +196,7 @@ IPhysicsCollisionSet *CPhysicsInterface::FindOrCreateCollisionSet(unsigned int i
 	return &m_collisionSets[index];
 }
 
-IPhysicsCollisionSet *CPhysicsInterface::FindCollisionSet( unsigned int id )
+IPhysicsCollisionSet *CPhysicsInterface::FindCollisionSet( uintptr_t id )
 {
 	if ( m_pCollisionSetHash )
 	{

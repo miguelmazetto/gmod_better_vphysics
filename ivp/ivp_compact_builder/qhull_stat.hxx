@@ -1,41 +1,36 @@
-/*<html><pre>  -<a                             href="qh-stat.htm"
+  /*<html><pre>  -<a                             href="qh-c.htm#stat"
   >-------------------------------</a><a name="TOP">-</a>
 
-   stat.h
+   stat.h 
      contains all statistics that are collected for qhull
 
-   see qh-stat.htm and stat.c
+   see qh-c.htm and stat.c
 
-   Copyright (c) 1993-2020 The Geometry Center.
-   $Id: //main/2019/qhull/src/libqhull/stat.h#4 $$Change: 2953 $
-   $DateTime: 2020/05/21 22:05:32 $$Author: bbarber $
+   copyright (c) 1993-1999, The Geometry Center
 
    recompile qhull if you change this file
 
-   Integer statistics are Z* while real statistics are W*.
+   Integer statistics are Z* while real statistics are W*.  
 
-   define MAYdebugx to call a routine at every statistic event
+   define maydebugx to call a routine at every statistic event
 
 */
 
 #ifndef qhDEFstat
 #define qhDEFstat 1
 
-/* Depends on realT.  Do not include "libqhull_r" to avoid circular dependency */
 
-/*-<a                             href="qh-stat.htm#TOC"
+/*-<a                             href="qh-c.htm#stat"
   >-------------------------------</a><a name="KEEPstatistics">-</a>
 
   qh_KEEPstatistics
-    0 turns off statistic reporting and gathering (except zzdef/zzinc/zzadd/zzval/wwval)
-
-  set qh_KEEPstatistics in user.h to 0 to turn off statistics
+    0 turns off statistic gathering (except zzdef/zzinc/zzadd/zzval/wwval)
 */
 #ifndef qh_KEEPstatistics
 #define qh_KEEPstatistics 1
 #endif
 
-/*-<a                             href="qh-stat.htm#TOC"
+/*-<a                             href="qh-c.htm#stat"
   >-------------------------------</a><a name="statistics">-</a>
 
   Zxxx for integers, Wxxx for reals
@@ -49,7 +44,7 @@
     remove leaders with  query-replace-regexp [ ^I]+  (
 */
 #if qh_KEEPstatistics
-enum qh_statistics {     /* alphabetical after Z/W */
+enum statistics {     /* alphabetical after Z/W */
     Zacoplanar,
     Wacoplanarmax,
     Wacoplanartot,
@@ -67,22 +62,14 @@ enum qh_statistics {     /* alphabetical after Z/W */
     Zback0,
     Zbestcentrum,
     Zbestdist,
-    Zbestlower,
-    Zbestlowerall,
-    Zbestloweralln,
-    Zbestlowerv,
     Zcentrumtests,
     Zcheckpart,
     Zcomputefurthest,
     Zconcave,
     Wconcavemax,
     Wconcavetot,
-    Zconcavecoplanar,
-    Wconcavecoplanarmax,
-    Wconcavecoplanartot,
-    Zconcavecoplanarridge,
-    Zconcaveridge,
     Zconcaveridges,
+    Zconcaveridge,
     Zcoplanar,
     Wcoplanarmax,
     Wcoplanartot,
@@ -101,11 +88,10 @@ enum qh_statistics {     /* alphabetical after Z/W */
     Wdegenmax,
     Wdegentot,
     Zdegenvertex,
-    Zdelfacetdup,
+    Zdelfacetdup, 
     Zdelridge,
     Zdelvertextot,
     Zdelvertexmax,
-    Zdetfacetarea,
     Zdetsimplex,
     Zdistcheck,
     Zdistconvex,
@@ -126,34 +112,19 @@ enum qh_statistics {     /* alphabetical after Z/W */
     Zdoc9,
     Zdoc10,
     Zdoc11,
-    Zdoc12,
     Zdropdegen,
     Zdropneighbor,
     Zdupflip,
     Zduplicate,
     Wduplicatemax,
     Wduplicatetot,
+    Zdupridge,
     Zdupsame,
-    Zflipped,
-    Wflippedmax,
-    Wflippedtot,
-    Zflippedfacets,
-    Zflipridge,
-    Zflipridge2,
-    Zfindbest,
-    Zfindbestmax,
-    Zfindbesttot,
-    Zfindcoplanar,
     Zfindfail,
-    Zfindhorizon,
-    Zfindhorizonmax,
-    Zfindhorizontot,
-    Zfindjump,
-    Zfindnew,
-    Zfindnewmax,
-    Zfindnewtot,
-    Zfindnewjump,
-    Zfindnewsharp,
+    Zflipped, 
+    Wflippedmax, 
+    Wflippedtot, 
+    Zflippedfacets,
     Zgauss0,
     Zgoodfacet,
     Zhashlookup,
@@ -182,7 +153,6 @@ enum qh_statistics {     /* alphabetical after Z/W */
     Zmergeinittot,
     Zmergeinitmax,
     Zmergeinittot2,
-    Zmergeintocoplanar,
     Zmergeintohorizon,
     Zmergenew,
     Zmergesettot,
@@ -195,19 +165,15 @@ enum qh_statistics {     /* alphabetical after Z/W */
     Zminnorm,
     Zmultiridge,
     Znearlysingular,
-    Zredundant,
+    Zneighbor,
     Wnewbalance,
     Wnewbalance2,
-    Znewbesthorizon,
     Znewfacettot,
     Znewfacetmax,
     Znewvertex,
     Wnewvertex,
     Wnewvertexmax,
-    Znewvertexridge,
     Znoarea,
-    Znonsimplicial,
-    Znowsimplicial,
     Znotgood,
     Znotgoodnew,
     Znotmax,
@@ -220,35 +186,24 @@ enum qh_statistics {     /* alphabetical after Z/W */
     Znumvisibility,
     Znumvneighbors,
     Zonehorizon,
-    Zpartangle,
     Zpartcoplanar,
-    Zpartcorner,
-    Zparthidden,
     Zpartinside,
-    Zpartition,
+    Zpartition, 
     Zpartitionall,
     Zpartnear,
-    Zparttwisted,
     Zpbalance,
     Wpbalance,
-    Wpbalance2,
-    Zpinchduplicate,
-    Zpinchedapex,
-    Zpinchedvertex,
-    Zpostfacets,
+    Wpbalance2, 
+    Zpostfacets, 
     Zpremergetot,
     Zprocessed,
     Zremvertex,
     Zremvertexdel,
-    Zredundantmerge,
     Zrenameall,
     Zrenamepinch,
     Zrenameshare,
     Zretry,
     Wretrymax,
-    Zretryadd,
-    Zretryaddmax,
-    Zretryaddtot,
     Zridge,
     Wridge,
     Wridgemax,
@@ -272,17 +227,6 @@ enum qh_statistics {     /* alphabetical after Z/W */
     Ztotridges,
     Ztotvertices,
     Ztotvisible,
-    Ztricoplanar,
-    Ztricoplanarmax,
-    Ztricoplanartot,
-    Ztridegen,
-    Ztrimirror,
-    Ztrinull,
-    Ztwisted,
-    Wtwistedtot,
-    Wtwistedmax,
-    Ztwistedridge,
-    Zvertextests,
     Wvertexmax,
     Wvertexmin,
     Zvertexridge,
@@ -291,17 +235,13 @@ enum qh_statistics {     /* alphabetical after Z/W */
     Zvertices,
     Zvisfacettot,
     Zvisfacetmax,
-    Zvisit,
-    Zvisit2max,
     Zvisvertextot,
     Zvisvertexmax,
-    Zvvisit,
-    Zvvisit2max,
     Zwidefacet,
     Zwidevertices,
     ZEND};
 
-/*-<a                             href="qh-stat.htm#TOC"
+/*-<a                             href="qh-c.htm#stat"
   >-------------------------------</a><a name="ZZstat">-</a>
 
   Zxxx/Wxxx statistics that remain defined if qh_KEEPstatistics=0
@@ -310,29 +250,24 @@ enum qh_statistics {     /* alphabetical after Z/W */
     be sure to use zzdef, zzinc, etc. with these statistics (no double checking!)
 */
 #else
-enum qh_statistics {     /* for zzdef etc. macros */
+enum statistics {     /* for zzdef etc. macros */
   Zback0,
   Zbestdist,
   Zcentrumtests,
-  Zcheckpart,
   Zconcaveridges,
   Zcoplanarhorizon,
   Zcoplanarpart,
   Zcoplanarridges,
   Zcyclefacettot,
   Zcyclehorizon,
-  Zdelvertextot,
   Zdistcheck,
   Zdistconvex,
-  Zdistplane,
   Zdistzero,
   Zdoc1,
   Zdoc2,
   Zdoc3,
   Zdoc11,
   Zflippedfacets,
-  Zflipridge,
-  Zflipridge2,
   Zgauss0,
   Zminnorm,
   Zmultiridge,
@@ -342,8 +277,6 @@ enum qh_statistics {     /* for zzdef etc. macros */
   Zpartcoplanar,
   Zpartition,
   Zpartitionall,
-  Zpinchduplicate,
-  Zpinchedvertex,
   Zprocessed,
   Zretry,
   Zridge,
@@ -359,17 +292,15 @@ enum qh_statistics {     /* for zzdef etc. macros */
   Wridgeok,
   Wridgeokmax,
   Zsetplane,
-  Ztotcheck,
   Ztotmerge,
-  Zvertextests,
-  ZEND};
+    ZEND};
 #endif
 
-/*-<a                             href="qh-stat.htm#TOC"
+/*-<a                             href="qh-c.htm#stat"
   >-------------------------------</a><a name="ztype">-</a>
-
+  
   ztype
-    the type of a statistic sets its initial value.
+    the type of a statistic sets its initial value.  
 
   notes:
     The type should be the same as the macro for collecting the statistic
@@ -378,17 +309,17 @@ enum ztypes {zdoc,zinc,zadd,zmax,zmin,ZTYPEreal,wadd,wmax,wmin,ZTYPEend};
 
 /*========== macros and constants =============*/
 
-/*-<a                             href="qh-stat.htm#TOC"
+/*-<a                             href="qh-c.htm#stat"
   >--------------------------------</a><a name="MAYdebugx">-</a>
-
+  
   MAYdebugx
     define as maydebug() to be called frequently for error trapping
 */
-#define MAYdebugx
+#define MAYdebugx 
 
-/*-<a                             href="qh-stat.htm#TOC"
+/*-<a                             href="qh-c.htm#stat"
   >--------------------------------</a><a name="zdef_">-</a>
-
+  
   zzdef_, zdef_( type, name, doc, -1)
     define a statistic (assumes 'qhstat.next= 0;')
 
@@ -405,9 +336,9 @@ enum ztypes {zdoc,zinc,zadd,zmax,zmin,ZTYPEreal,wadd,wmax,wmin,ZTYPEend};
 #define zdef_(type,name,doc,count)
 #endif
 
-/*-<a                             href="qh-stat.htm#TOC"
+/*-<a                             href="qh-c.htm#stat"
   >--------------------------------</a><a name="zinc_">-</a>
-
+  
   zzinc_( name ), zinc_( name)
     increment an integer statistic
 */
@@ -418,9 +349,9 @@ enum ztypes {zdoc,zinc,zadd,zmax,zmin,ZTYPEreal,wadd,wmax,wmin,ZTYPEend};
 #define zinc_(id) {}
 #endif
 
-/*-<a                             href="qh-stat.htm#TOC"
+/*-<a                             href="qh-c.htm#stat"
   >--------------------------------</a><a name="zadd_">-</a>
-
+  
   zzadd_( name, value ), zadd_( name, value ), wadd_( name, value )
     add value to an integer or real statistic
 */
@@ -434,7 +365,7 @@ enum ztypes {zdoc,zinc,zadd,zmax,zmin,ZTYPEreal,wadd,wmax,wmin,ZTYPEend};
 #define wadd_(id, val) {}
 #endif
 
-/*-<a                             href="qh-stat.htm#TOC"
+/*-<a                             href="qh-c.htm#stat"
   >--------------------------------</a><a name="zval_">-</a>
 
   zzval_( name ), zval_( name ), wwval_( name )
@@ -450,7 +381,7 @@ enum ztypes {zdoc,zinc,zadd,zmax,zmin,ZTYPEreal,wadd,wmax,wmin,ZTYPEend};
 #define wval_(id) qhstat tempr
 #endif
 
-/*-<a                             href="qh-stat.htm#TOC"
+/*-<a                             href="qh-c.htm#stat"
   >--------------------------------</a><a name="zmax_">-</a>
 
   zmax_( id, val ), wmax_( id, value )
@@ -465,7 +396,7 @@ enum ztypes {zdoc,zinc,zadd,zmax,zmin,ZTYPEreal,wadd,wmax,wmin,ZTYPEend};
 #define wmax_(id, val) {}
 #endif
 
-/*-<a                             href="qh-stat.htm#TOC"
+/*-<a                             href="qh-c.htm#stat"
   >--------------------------------</a><a name="zmin_">-</a>
 
   zmin_( id, val ), wmin_( id, value )
@@ -482,9 +413,9 @@ enum ztypes {zdoc,zinc,zadd,zmax,zmin,ZTYPEreal,wadd,wmax,wmin,ZTYPEend};
 /*================== stat.h types ==============*/
 
 
-/*-<a                             href="qh-stat.htm#TOC"
+/*-<a                             href="qh-c.htm#stat"
   >--------------------------------</a><a name="intrealT">-</a>
-
+ 
   intrealT
     union of integer and real, used for statistics
 */
@@ -494,54 +425,43 @@ union intrealT {
     realT r;
 };
 
-/*-<a                             href="qh-stat.htm#TOC"
+/*-<a                             href="qh-c.htm#stat"
   >--------------------------------</a><a name="qhstat">-</a>
-
+  
   qhstat
-    global data structure for statistics, similar to qh and qhrbox
-
+    global data structure for statistics
+  
   notes:
    access to qh_qhstat is via the "qhstat" macro.  There are two choices
    qh_QHpointer = 1     access globals via a pointer
                         enables qh_saveqhull() and qh_restoreqhull()
-                = 0     qh_qhstat is a static data structure
-                        only one instance of qhull() can be active at a time
-                        default value
-   qh_QHpointer is defined in libqhull.h
-   For msvc, qh_QHpointer_dllimport or qh_dllimport define qh_qh as __declspec(dllimport) [libqhull.h]
+		= 0     qh_qhstat is a static data structure
+		        only one instance of qhull() can be active at a time
+			default value
+   qh_QHpointer is defined in qhull.h
 
-   allocated in stat.c using qh_malloc()
+   allocated in stat.c
 */
-#ifndef DEFqhstatT
-#define DEFqhstatT 1
-typedef struct qhstatT qhstatT;
-#endif
-
-#ifdef qh_QHpointer_dllimport
-#define qhstat qh_qhstat->
-__declspec(dllimport) extern qhstatT *qh_qhstat;
-#elif qh_QHpointer
+typedef struct qhstatT qhstatT; 
+#if qh_QHpointer
 #define qhstat qh_qhstat->
 extern qhstatT *qh_qhstat;
-#elif defined(qh_dllimport)
-#define qhstat qh_qhstat.
-__declspec(dllimport) extern qhstatT qh_qhstat;
 #else
 #define qhstat qh_qhstat.
-extern qhstatT qh_qhstat;
+extern qhstatT qh_qhstat; 
 #endif
-struct qhstatT {
+struct qhstatT {  
   intrealT   stats[ZEND];     /* integer and real statistics */
-  unsigned char id[ZEND+10];  /* id's in print order */
-  const char *doc[ZEND];      /* array of documentation strings */
+  unsigned   char id[ZEND+10]; /* id's in print order */
+  const char      *doc[ZEND];       /* array of documentation strings */
   short int  count[ZEND];     /* -1 if none, else index of count to use */
   char       type[ZEND];      /* type, see ztypes above */
   char       printed[ZEND];   /* true, if statistic has been printed */
   intrealT   init[ZTYPEend];  /* initial values by types, set initstatistics */
 
   int        next;            /* next index for zdef_ */
-  int        precision;       /* index for precision problems, printed on qh_errexit and qh_produce_output2/Q0/QJn */
-  int        vridges;         /* index for Voronoi ridges, printed on qh_produce_output2 */
+  int        precision;       /* index for precision problems */
+  int        vridges;         /* index for Voronoi ridges */
   int        tempi;
   realT      tempr;
 };
@@ -553,21 +473,20 @@ void    qh_allstatB(void);
 void    qh_allstatC(void);
 void    qh_allstatD(void);
 void    qh_allstatE(void);
-void    qh_allstatE2(void);
 void    qh_allstatF(void);
 void    qh_allstatG(void);
 void    qh_allstatH(void);
 void    qh_allstatI(void);
-void    qh_allstatistics(void);
-void    qh_collectstatistics(void);
-void    qh_freestatistics(void);
-void    qh_initstatistics(void);
-boolT   qh_newstats(int idx, int *nextindex);
-boolT   qh_nostatistic(int i);
-void    qh_printallstatistics(FILE *fp, const char *string);
-void    qh_printstatistics(FILE *fp, const char *string);
-void    qh_printstatlevel(FILE *fp, int id);
-void    qh_printstats(FILE *fp, int idx, int *nextindex);
-realT   qh_stddev(int num, realT tot, realT tot2, realT *ave);
+void    qh_allstatistics (void);
+void    qh_collectstatistics (void);
+void	qh_freestatistics (void);
+void    qh_initstatistics (void);
+boolT 	qh_newstats (int index, int *nextindex);
+boolT 	qh_nostatistic (int i);
+void    qh_printallstatistics (FILE *fp, const char *string);
+void    qh_printstatistics (FILE *fp, const char *string);
+void  	qh_printstatlevel (FILE *fp, int id, int start);
+void  	qh_printstats (FILE *fp, int index, int *nextindex);
+realT   qh_stddev (int num, realT tot, realT tot2, realT *ave);
 
 #endif   /* qhDEFstat */
