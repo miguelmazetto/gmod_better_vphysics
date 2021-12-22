@@ -127,15 +127,14 @@ void CVPhysicsParse::ParseSolid( solid_t *pSolid, IVPhysicsKeyHandler *unknownKe
 	char key[MAX_KEYVALUE], value[MAX_KEYVALUE];
 	key[0] = 0;
 
+	// mmz: this stupid unintialized memory caused me 3 days of debugging and
+	// reverse engineering.
+	value[0] = 0;
+	memset(pSolid, 0, sizeof(*pSolid));
+
 	if ( unknownKeyHandler )
-	{
 		unknownKeyHandler->SetDefaults( pSolid );
-	}
-	else
-	{
-		memset( pSolid, 0, sizeof(*pSolid) );
-	}
-	
+
 	// disable these until the ragdoll is created
 	pSolid->params.enableCollisions = false;
 
@@ -922,7 +921,7 @@ const char *ParseKeyvalue( const char *pBuffer, char (&key)[MAX_KEYVALUE], char 
 	// Make sure value is always null-terminated.
 	value[0] = 0;
 
-	pBuffer = ParseFile( pBuffer, key, NULL );
+	pBuffer = ParseFile( pBuffer, key, NULL, NULL, 1024 );
 
 	// no value on a close brace
 	if ( key[0] == '}' && key[1] == 0 )
@@ -933,7 +932,7 @@ const char *ParseKeyvalue( const char *pBuffer, char (&key)[MAX_KEYVALUE], char 
 
 	Q_strlower( key );
 	
-	pBuffer = ParseFile( pBuffer, value, NULL );
+	pBuffer = ParseFile( pBuffer, value, NULL, NULL, 1024 );
 
 	Q_strlower( value );
 

@@ -1553,6 +1553,10 @@ CPhysicsObject *CreatePhysicsObject( CPhysicsEnvironment *pEnvironment, const CP
 
 	IVP_U_Matrix massCenterMatrix;
 	massCenterMatrix.init();
+
+	// mmz: fixme
+	pParams->massCenterOverride = NULL;
+
 	if ( pParams->massCenterOverride )
 	{
 		IVP_U_Point center;
