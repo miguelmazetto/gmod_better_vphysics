@@ -890,7 +890,7 @@ sim_units_0:
 
     ;
 
-
+// Easter egg?
 #if 0 && defined(WIN32)
   unsigned long time = p_get_time();
 
