@@ -5,7 +5,10 @@
 
 
 #define IVU_MEM_ALIGN 0x20 //align to chach line data 32Byte
-#define IVU_MEM_MASK 0xffffffe0; 
+
+// mmz: fix 64bit
+#define IVU_MEM_MASK ~(size_t)0x1f;
+
 #define IVU_MEMORY_BLOCK_SIZE (0x8000-IVU_MEM_ALIGN)	// size of block loaded by 
 
 struct p_Memory_Elem {
@@ -77,10 +80,11 @@ void IVP_U_Memory::end_memory_transaction()
 
 
 //warning: dependency with function neuer_sp_block
+// mmz: fix 64bit
 inline void *IVP_U_Memory::align_to_next_adress(void *p) {
-    long adress=(long)p;
+    size_t adress = (size_t)p;
     adress += IVU_MEM_ALIGN-1;
-    adress  =adress & IVU_MEM_MASK;
+    adress = adress & IVU_MEM_MASK;
     return (void*)adress;
 }
 

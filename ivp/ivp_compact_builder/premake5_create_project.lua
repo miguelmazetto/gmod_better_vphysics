@@ -47,17 +47,22 @@ group("IVP")
 			"ivp_tetra_intrude.cxx",
 			"ivv_cluster_min_hash.cxx",
 			"qhull.cxx",
-			"qhull_geom2.cxx",
 			"qhull_geom.cxx",
+			"qhull_geom2.cxx",
 			"qhull_global.cxx",
 			"qhull_io.cxx",
 			"qhull_mem.cxx",
 			"qhull_merge.cxx",
-			"qhull_poly2.cxx",
 			"qhull_poly.cxx",
+			"qhull_poly2.cxx",
 			"qhull_qset.cxx",
+			"qhull_random.cxx",
+			"qhull_rboxlib.cxx",
 			"qhull_stat.cxx",
-			"qhull_user.cxx"
+			"qhull_user.cxx",
+			"qhull_usermem.cxx",
+			"qhull_userprintf.cxx",
+			"qhull_userprintf_rbox.cxx"
 		})
 		vpaths({["Source files/*"] = "*.cxx"})
 

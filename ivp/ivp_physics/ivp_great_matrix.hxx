@@ -30,8 +30,11 @@
     #else
 	#define IVP_VECFPU_SIZE 1  
 	#define IVP_VECFPU_LD 0
-	#define IVP_VECFPU_MASK 0xffffffff 
-	#define IVP_VECFPU_MEM_MASK 0xfffffff8 //8Byte per Block
+
+    // mmz: fix 64bit
+	#define IVP_VECFPU_MASK ~0 
+	#define IVP_VECFPU_MEM_MASK ~7 //8Byte per Block
+
 	#define IVP_VECFPU_MEMSHIFT 3 //8 Bytes per Floating Point Number
     #endif
 #endif
