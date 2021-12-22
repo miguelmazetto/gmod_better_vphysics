@@ -500,7 +500,8 @@ IVP_Compact_Ledge *IVP_SurfaceBuilder_Pointsoup::convert_pointsoup_to_compact_le
     IVP_BOOL try_unjumbled = IVP_TRUE;
     IVP_BOOL qhull_free_flag = IVP_FALSE;
     for ( IVP_DOUBLE random_eps = 1e-12f; random_eps < 0.02f;  ){  
-      sprintf(flags, "qhull Qs Pp C-0 W1e-14 E1.0e-18"); // "qhull QbB Pp"
+		// mmz: got that from ghidra, E1.0e-18 to E1.0e-6
+      sprintf(flags, "qhull Qs Pp C-0 W1e-14 E1.0e-6"); // "qhull QbB Pp
       int exitcode = 0;
       if (try_unjumbled){
 	  if (qhull_free_flag)	  qh_freeqhull(!qh_ALL);                   /* free long memory  */
