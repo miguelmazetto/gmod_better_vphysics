@@ -1651,10 +1651,10 @@ void CPhysicsCollision::VCollideLoad( vcollide_t *pOutput, int solidCount, const
 
 	BEGIN_IVP_ALLOCATION();
 
-	for ( int i = 0; i < solidCount; i++ )
+	for (int i = 0; i < solidCount; i++ )
 	{
-		int size;
-		memcpy( &size, pBuffer + position, sizeof(int) );
+		int size = *(int*)(pBuffer + position); // mmz: changed this
+		//memcpy( &size, pBuffer + position, sizeof(int) );
 		position += sizeof(int);
 
 		pOutput->solids[i] = CPhysCollide::UnserializeFromBuffer( pBuffer + position, size, i, swap );

@@ -46,7 +46,7 @@ IVP_DOUBLE P_Pop_Too_Flat_Eps;
 int IVP_Poly_Point::point_num()
 {
     if (!l_tetras) return -1;
-    return this - this->l_tetras->points;
+    return (size_t)this - (size_t)this->l_tetras->points;
 }
 
 void IVP_Poly_Point::print(const char *text){
@@ -139,7 +139,7 @@ void IVP_Tri_Edge::print(const char *text){
     if (!text) text = "";
     const char *name = start_point->get_real_object2()->get_name();
     if (!name) name = "noname";
-    printf("%s '%s'	start_%lX: %i	",text,name, 0xff & ( ( (long)this->start_point->l_tetras  ) >>8), this->start_point->point_num());
+    printf("%s '%s'	start_%lX: %i	",text,name, 0xff & ( ( (size_t)this->start_point->l_tetras  ) >>8), this->start_point->point_num());
     this->triangle->print("\n");
 }
 

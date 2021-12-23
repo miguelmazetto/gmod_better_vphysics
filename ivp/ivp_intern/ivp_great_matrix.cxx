@@ -23,9 +23,9 @@
 inline void IVP_VecFPU::fpu_add_multiple_row(IVP_DOUBLE *target_adress,IVP_DOUBLE *source_adress,IVP_DOUBLE factor,int size,IVP_BOOL adress_aligned) {
     if(adress_aligned==IVP_FALSE) {
 	//we have to calculate the block size and shift adresses to lower aligned adresses
-	long result_adress = long(source_adress) & IVP_VECFPU_MEM_MASK;
-	target_adress = (IVP_DOUBLE *)( long (target_adress) & IVP_VECFPU_MEM_MASK);
-	size += (long(source_adress)-result_adress)>>IVP_VECFPU_MEMSHIFT;
+	size_t result_adress = size_t(source_adress) & IVP_VECFPU_MEM_MASK;
+	target_adress = (IVP_DOUBLE *)(size_t(target_adress) & IVP_VECFPU_MEM_MASK);
+	size += (size_t(source_adress)-result_adress)>>IVP_VECFPU_MEMSHIFT;
 	source_adress=(IVP_DOUBLE *)result_adress;
     }
 
@@ -104,9 +104,9 @@ inline void IVP_VecFPU::fpu_add_multiple_row(IVP_DOUBLE *target_adress,IVP_DOUBL
 inline IVP_DOUBLE IVP_VecFPU::fpu_large_dot_product(IVP_DOUBLE *base_a, IVP_DOUBLE *base_b, int size, IVP_BOOL adress_aligned) {
     if(adress_aligned==IVP_FALSE) {
 	    //we have to calculate the block size and shift adresses to lower aligned adresses
-	    long result_adress = long(base_a) & IVP_VECFPU_MEM_MASK;
-	    base_b = (IVP_DOUBLE *)( long (base_b) & IVP_VECFPU_MEM_MASK);
-	    size += (long(base_a)-result_adress)>>IVP_VECFPU_MEMSHIFT;  // because start changed
+		size_t result_adress = size_t(base_a) & IVP_VECFPU_MEM_MASK;
+	    base_b = (IVP_DOUBLE *)(size_t(base_b) & IVP_VECFPU_MEM_MASK);
+	    size += (size_t(base_a)-result_adress)>>IVP_VECFPU_MEMSHIFT;  // because start changed
 	    base_a=(IVP_DOUBLE *)result_adress;
     }
 #   if defined(IVP_WILLAMETTE)
@@ -160,8 +160,8 @@ inline IVP_DOUBLE IVP_VecFPU::fpu_large_dot_product(IVP_DOUBLE *base_a, IVP_DOUB
 inline void IVP_VecFPU::fpu_multiply_row(IVP_DOUBLE *target_adress,IVP_DOUBLE factor,int size,IVP_BOOL adress_aligned) {
     if(adress_aligned==IVP_FALSE) {
 	//we have to calculate the block size and shift adresses to lower aligned adresses
-	long adress,result_adress;
-	adress=(long)target_adress;
+	size_t adress,result_adress;
+	adress=(size_t)target_adress;
 	result_adress=adress & IVP_VECFPU_MEM_MASK;
 	size+=(adress-result_adress)>>IVP_VECFPU_MEMSHIFT;
 	target_adress=(IVP_DOUBLE *)result_adress;
@@ -207,12 +207,12 @@ inline void IVP_VecFPU::fpu_multiply_row(IVP_DOUBLE *target_adress,IVP_DOUBLE fa
 inline void IVP_VecFPU::fpu_exchange_rows(IVP_DOUBLE *target_adress1,IVP_DOUBLE *target_adress2,int size,IVP_BOOL adress_aligned) {
     if(adress_aligned==IVP_FALSE) {
 	//we have to calculate the block size and shift adresses to lower aligned adresses
-	long adress,result_adress;
-	adress=(long)target_adress1;
+	size_t adress,result_adress;
+	adress=(size_t)target_adress1;
 	result_adress=adress & IVP_VECFPU_MEM_MASK;
 	size+=(adress-result_adress)>>IVP_VECFPU_MEMSHIFT;
 	target_adress1=(IVP_DOUBLE *)result_adress;
-	adress=(long)target_adress2;
+	adress=(size_t)target_adress2;
 	adress=adress & IVP_VECFPU_MEM_MASK;
 	target_adress2=(IVP_DOUBLE *)adress;
     }
@@ -253,12 +253,12 @@ inline void IVP_VecFPU::fpu_exchange_rows(IVP_DOUBLE *target_adress1,IVP_DOUBLE 
 inline void IVP_VecFPU::fpu_copy_rows(IVP_DOUBLE *target_adress,IVP_DOUBLE *source_adress,int size,IVP_BOOL adress_aligned) {
     if(adress_aligned==IVP_FALSE) {
 	//we have to calculate the block size and shift adresses to lower aligned adresses
-	long adress,result_adress;
-	adress=(long)source_adress;
+	size_t adress,result_adress;
+	adress=(size_t)source_adress;
 	result_adress=adress & IVP_VECFPU_MEM_MASK;
 	size+=(adress-result_adress)>>IVP_VECFPU_MEMSHIFT;
 	source_adress=(IVP_DOUBLE *)result_adress;
-	adress=(long)target_adress;
+	adress=(size_t)target_adress;
 	adress=adress & IVP_VECFPU_MEM_MASK;
 	target_adress=(IVP_DOUBLE *)adress;
     }
@@ -288,8 +288,8 @@ inline void IVP_VecFPU::fpu_copy_rows(IVP_DOUBLE *target_adress,IVP_DOUBLE *sour
 
 inline void IVP_VecFPU::fpu_set_row_to_zero(IVP_DOUBLE *target_adress,int size,IVP_BOOL adress_aligned) {
     if(adress_aligned==IVP_FALSE) {
-        long adress,result_adress;
-	adress=(long)target_adress;
+	size_t adress,result_adress;
+	adress=(size_t)target_adress;
 	result_adress=adress & IVP_VECFPU_MEM_MASK;
 	size+=(adress-result_adress)>>IVP_VECFPU_MEMSHIFT;
 	target_adress=(IVP_DOUBLE *)result_adress;
@@ -406,8 +406,8 @@ void IVP_Great_Matrix_Many_Zero::copy_matrix(IVP_Great_Matrix_Many_Zero *orig_ma
 
 
 void IVP_Great_Matrix_Many_Zero::align_matrix_values() {
-    long adress,result_adress;
-    adress=(long)matrix_values;
+	size_t adress,result_adress;
+    adress=(size_t)matrix_values;
     int maximal_shift=(IVP_VECFPU_SIZE-1)<<IVP_VECFPU_MEMSHIFT;
     result_adress=(adress+maximal_shift) & IVP_VECFPU_MEM_MASK;
     matrix_values=(IVP_DOUBLE*)result_adress;

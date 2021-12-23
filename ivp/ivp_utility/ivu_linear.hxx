@@ -9,7 +9,7 @@
 #pragma pack(push,16)
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #	pragma warning( disable : 4244 ) 
 #endif
 
@@ -18,7 +18,6 @@ class IVP_U_Hesse;
 class IVP_U_Quat;
 class IVP_U_Point;
 class IVP_U_Float_Quat;
-
 
 /********************************************************************************
  *	Name:	      	IVP_COORDINATE_INDEX

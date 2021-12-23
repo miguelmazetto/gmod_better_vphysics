@@ -228,7 +228,7 @@ void CPhysicsInterface::DestroyAllCollisionSets()
 // In release build, each of these libraries must contain a symbol that indicates it is also a release build
 // You MUST disable this in order to run a release vphysics.dll with a debug library.
 // This should not usually be necessary
-#if !defined(_DEBUG) && defined(_WIN32)
+/*#if !defined(_DEBUG) && defined(_WIN32)
 extern int ivp_physics_lib_is_a_release_build;
 extern int ivp_compactbuilder_lib_is_a_release_build;
 extern int hk_base_lib_is_a_release_build;
@@ -243,5 +243,4 @@ void DebugTestFunction()
 	hk_math_lib_is_a_release_build = 0;
 	havana_constraints_lib_is_a_release_build = 0;
 }
-#endif
-
+#endif*/
