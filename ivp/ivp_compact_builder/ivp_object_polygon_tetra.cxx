@@ -19,6 +19,8 @@
 #include <ivu_min_hash.hxx>
 #include <ivp_tetra_intrude.hxx>
 
+#include <robin_hood.h>
+
 /* for debugging stop after some pops */
 int	   n_physical_pops = -1;
 
@@ -916,25 +918,30 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation()
     return IVP_NO_ERROR;
 }
 
-void ivp_check_for_opposite(IVP_Hash *hash, IVP_Poly_Point *p0, IVP_Poly_Point *p1, IVP_Tri_Edge *edge)
+// mmz: new hashmap system
+#define NH_PointEdge robin_hood::unordered_map<size_t, IVP_Tri_Edge*>
+
+void ivp_check_for_opposite( NH_PointEdge *map, IVP_Poly_Point *p0, IVP_Poly_Point *p1, IVP_Tri_Edge *edge)
 {
     IVP_Poly_Point *hashval[2];
+
     if(p0<p1){
-	hashval[0] = p0;
-	hashval[1] = p1;
+		hashval[0] = p0;
+		hashval[1] = p1;
     }else{
-	hashval[0] = p1;
-	hashval[1] = p0;
+		hashval[0] = p1;
+		hashval[1] = p0;
     }
-    IVP_Tri_Edge *edge2;
-    edge2 = (IVP_Tri_Edge *)hash->find((char *)(&hashval[0]));
-    if(!edge2){
-	// add
-	hash->add((char *)(&hashval[0]), (void *)edge);	
+
+	size_t hash = robin_hood::hash_bytes((void*)hashval, 2 * sizeof(void*));
+    IVP_Tri_Edge *edge2 = map->find(hash)->second;
+
+    if(edge2 == map->end()->second){
+		map->insert({ hash, edge });
     }else{
-	// opposites now known -> add
-	edge->opposite = edge2;
-	edge2->opposite = edge;	
+		// opposites now known -> add
+		edge->opposite = edge2;
+		edge2->opposite = edge;	
     }
 }
 
@@ -981,6 +988,8 @@ IVP_Object_Polygon_Tetra::~IVP_Object_Polygon_Tetra()
     P_FREE(this->points);
 }
 
+// mmz: new hashmap system
+#define NH_PointEdge robin_hood::unordered_map<size_t, IVP_Tri_Edge*>
 
 IVP_ERROR_STRING IVP_Object_Polygon_Tetra::make_triangles()
 {
@@ -988,13 +997,13 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::make_triangles()
     IVP_Template_Surface *sur;
     IVP_Poly_Point *po, *po2, *po3;
     IVP_Triangle *tri;
-    IVP_Hash *hash;
+	NH_PointEdge map;
     IVP_Template_Polygon *templ = template_polygon;
     int num_of_edges;
     
     n_edges = 0;
     num_of_edges = 6 * (templ->n_points-2); // accurately calculated
-    hash = new IVP_Hash(num_of_edges/*size*/, 2*sizeof(void*)/*keylen*/, 0/*notfound*/);
+    //hash = new IVP_Hash(num_of_edges/*size*/, 2*sizeof(void*)/*keylen*/, 0/*notfound*/);
     {
 	int i;    
 	IVP_Tri_Edge *edge;
@@ -1055,7 +1064,7 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::make_triangles()
 		edge->next = edge+1;
 		edge->prev = edge+2;
 		edge->behind = NULL; // terminal!
-		ivp_check_for_opposite(hash, po, po2, edge);
+		ivp_check_for_opposite(&map, po, po2, edge);
 		
 		// 2. edge
 		edge++;
@@ -1064,7 +1073,7 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::make_triangles()
 		edge->next = edge+1;
 		edge->prev = edge-1;
 		edge->behind = NULL; // terminal!
-		ivp_check_for_opposite(hash, po2, po3, edge);
+		ivp_check_for_opposite(&map, po2, po3, edge);
 		
 		// 3. edge
 		edge++;
@@ -1073,11 +1082,11 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::make_triangles()
 		edge->next = edge-2;
 		edge->prev = edge-1;
 		edge->behind = NULL; // terminal!
-		ivp_check_for_opposite(hash, po3, po, edge);
+		ivp_check_for_opposite(&map, po3, po, edge);
 	    }
 	    P_DELETE(td_sur);
 	}
-	P_DELETE(hash);
+	map.clear();
     }
 //	this->check_konsistency_of_triangles();
 
