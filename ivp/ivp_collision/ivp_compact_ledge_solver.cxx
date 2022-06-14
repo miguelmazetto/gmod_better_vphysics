@@ -124,7 +124,7 @@ void IVP_Compact_Ledge_Solver::get_all_ledges( const IVP_Compact_Mopp* mopp, IVP
 
 	do
 	{
-		IVP_ASSERT(((unsigned int)(ledge) & 0xf) == 0);
+		IVP_ASSERT(((uintp)(ledge) & 0xf) == 0);
 
 		all_ledges_out->add((IVP_Compact_Ledge*)ledge);
 

@@ -30,7 +30,7 @@ inline void hk_VecFPU::fpu_add_multiple_row(hk_real *target_adress,hk_real *sour
 	: "r" (target_adress), "r" (source_adress) , "r" (size), "f" (factor)
 	: "$8" , "memory");
 #else
-//#if 0
+#if 0
 #       if defined(IVP_WILLAMETTE)
 	    ;
         __m128d factor128=_mm_set1_pd(factor);
@@ -45,11 +45,11 @@ inline void hk_VecFPU::fpu_add_multiple_row(hk_real *target_adress,hk_real *sour
 	        target_adress+=hk_VecFPU_SIZE_FLOAT;
 	        source_adress+=hk_VecFPU_SIZE_FLOAT;
 		}
-//#endif
+#endif
 #endif
 	
 
-    for(int i=size;i>0;i-=hk_VecFPU_SIZE_FLOAT) {
+        for(int i=size;i>0;i-=hk_VecFPU_SIZE_FLOAT) {
 #       if hk_VecFPU_SIZE_FLOAT == 2
 	    hk_real a = source_adress[0] * factor;
 	    hk_real b = source_adress[1] * factor;
@@ -71,7 +71,7 @@ inline void hk_VecFPU::fpu_add_multiple_row(hk_real *target_adress,hk_real *sour
 	    target_adress[2] = c;
 	    target_adress[3] = d;
 #   else 
-	//shit
+	shit
 #   endif
 	    target_adress+=hk_VecFPU_SIZE_FLOAT;
 	    source_adress+=hk_VecFPU_SIZE_FLOAT;

@@ -27,10 +27,17 @@ class hk_Ragdoll_Constraint_Work
 {
 	public:
 
+#ifdef HK_ARCH_PPC
+		static inline void *operator new (size_t size, void *addr){
+			return addr;
+		}
+#else
 		static inline void *operator new (size_t size, void *addr){
 			return addr;
 		}
 
+		static inline void operator delete (void *, void *){ }
+#endif
 		/* linear */
 		hk_Vector3 dir;
 		hk_VM_Query_Builder< hk_VMQ_Storage<3> > query_engine_linear;
@@ -282,7 +289,6 @@ int	hk_Ragdoll_Constraint::setup_and_step_constraint(
 		query_engine.apply_impulses( HK_BODY_A, b0, (hk_real *)&impulses(0) );
 		query_engine.apply_impulses( HK_BODY_B, b1, (hk_real *)&impulses(0) );
 	}
-	delete &work;
 	return HK_NEXT_MULTIPLE_OF(16, sizeof(hk_Ragdoll_Constraint_Work));
 }
 

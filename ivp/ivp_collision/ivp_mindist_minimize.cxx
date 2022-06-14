@@ -210,7 +210,6 @@ IVP_MRC_TYPE IVP_Mindist::recalc_invalid_mindist()
 	CORE;	
     }	// while
     CORE;
-    return IVP_MRC_ILLEGAL;
 }
 
 
@@ -286,7 +285,6 @@ IVP_MRC_TYPE IVP_Mindist::recalc_mindist()
 	CORE;	
     }	// while
     CORE;
-    return IVP_MRC_ILLEGAL;
 }
 
 IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_FF( const IVP_Compact_Edge *A,const IVP_Compact_Edge *B, IVP_Cache_Ledge_Point *m_cache_A, IVP_Cache_Ledge_Point *m_cache_B)
@@ -436,24 +434,24 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_FF( const IVP_Compact_Edge 
 	      break;
 	    }
 	    default:
-		CORE;
+                printf("IVP_Mindist_Minimize_Solver::p_minimize_FF failed(%s:%d)\n", __FILE__, __LINE__);
 	  }
 	  break;
       };
       case IVP_ST_EDGE:{
-	  switch(syn1->get_status()){  
+	  switch(syn1->get_status()){
 	    case IVP_ST_EDGE:{
 		ret_val = p_minimize_KK(e0, e1, m_cache_0, m_cache_1);
 		break;
 	    }
 	  default:
-	      CORE;
+              printf("IVP_Mindist_Minimize_Solver::p_minimize_FF failed(%s:%d)\n", __FILE__, __LINE__);
 	      break;
 	  }
 	  break;
       }
       default:
-	CORE;
+          printf("IVP_Mindist_Minimize_Solver::p_minimize_FF failed(%s:%d)\n", __FILE__, __LINE__);
     }
     
     return ret_val;

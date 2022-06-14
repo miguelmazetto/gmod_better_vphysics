@@ -28,10 +28,16 @@ class hk_Fixed_Work
 {
 	public:
 
+#ifdef HK_ARCH_PPC
 		static inline void *operator new (size_t size, void *addr){
 			return addr;
 		}
-
+#else
+		static inline void *operator new (size_t size, void *addr){
+			return addr;
+		}
+		static inline void operator delete (void *, void *){ }
+#endif
 		hk_Fixed_Dense_Vector<6> m_correction;
 		hk_VM_Query_Builder< hk_VMQ_Storage<6> > qe;
 };

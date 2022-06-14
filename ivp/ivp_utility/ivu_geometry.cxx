@@ -107,11 +107,7 @@ IVP_RETURN_TYPE IVP_U_Plain::calc_intersect_with(const IVP_U_Hesse *plane2,
     straight.vec.normize();
 
     // calc intersection of straight with plane2
-    if(plane2->calc_intersect_with(&straight, &straight_out->start_point) == IVP_FAULT){
-	printf("Merkwuerden.\n");
-	CORE;
-    }
-    return IVP_OK;
+    return plane2->calc_intersect_with(&straight, &straight_out->start_point);
 }
 
 IVP_RETURN_TYPE IVP_U_Hesse::calc_intersect_with(const IVP_U_Straight *straight,

@@ -54,10 +54,12 @@ workspace("gmod_better_vphysics")
 	filter("platforms:x86")
 		architecture("x86")
 		libdirs({"sourcesdk-minimal/lib/public"})
+		defines({"_X86_"})
 
 	filter("platforms:x86_64")
 		architecture("x86_64")
 		libdirs({"sourcesdk-minimal/lib/public/x64"})
+		defines({"_AMD64_","PLATFORM_64BITS"})
 
 	filter({"platforms:x86","system:windows"})
 		defines({"COMPILER_MSVC32","WIN32"})

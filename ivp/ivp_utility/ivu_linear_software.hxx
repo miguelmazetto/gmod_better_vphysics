@@ -48,7 +48,7 @@ inline void IVP_U_Float_Point::mult(IVP_DOUBLE factor){
 }
 
 inline IVP_DOUBLE IVP_U_Float_Point::dot_product(const IVP_U_Float_Point *v2) const {
-    return((IVP_DOUBLE)k[0]*v2->k[0] + (IVP_DOUBLE)k[1]*v2->k[1] + (IVP_DOUBLE)k[2]*v2->k[2] );
+    return( k[0]*v2->k[0] + k[1]*v2->k[1] + k[2]*v2->k[2] );
 };
 
 
@@ -67,9 +67,9 @@ inline void IVP_U_Float_Point::add_multiple (const IVP_U_Float_Point *v1, const 
 
 inline void IVP_U_Float_Point::set_pairwise_mult (const IVP_U_Float_Point *v1, const IVP_U_Float_Point *v2){	// pairwise multiple 
     IVP_DOUBLE a,b,c;
-    a = (IVP_DOUBLE)v1->k[0] * v2->k[0];
-    b = (IVP_DOUBLE)v1->k[1] * v2->k[1];
-    c = (IVP_DOUBLE)v1->k[2] * v2->k[2];
+    a = v1->k[0] * v2->k[0];
+    b = v1->k[1] * v2->k[1];
+    c = v1->k[2] * v2->k[2];
 
     k[0] = a;
     k[1] = b;
@@ -80,18 +80,18 @@ inline void IVP_U_Float_Point::set_pairwise_mult (const IVP_U_Float_Point *v1, c
 
 
 inline void IVP_U_Float_Point::add(const IVP_U_Float_Point *v1, const IVP_U_Float_Point *v2){
-    IVP_DOUBLE a = (IVP_DOUBLE)v1->k[0] + v2->k[0];
-    IVP_DOUBLE b = (IVP_DOUBLE)v1->k[1] + v2->k[1];
-    IVP_DOUBLE c = (IVP_DOUBLE)v1->k[2] + v2->k[2];
-    k[0] = (IVP_FLOAT)a;k[1] = (IVP_FLOAT)b;k[2] = (IVP_FLOAT)c;
+    IVP_DOUBLE a = v1->k[0] + v2->k[0];
+    IVP_DOUBLE b = v1->k[1] + v2->k[1];
+    IVP_DOUBLE c = v1->k[2] + v2->k[2];
+    k[0] = (IVP_FLOAT)a;k[1] = (IVP_FLOAT)b;k[2] = (IVP_FLOAT)c;  
 }
 
 
 inline void IVP_U_Float_Point::subtract(const IVP_U_Float_Point *v1,const IVP_U_Float_Point *v2){
     IVP_DOUBLE a,b,c;
-    a = (IVP_DOUBLE)v1->k[0] - v2->k[0];
-    b = (IVP_DOUBLE)v1->k[1] - v2->k[1];
-    c = (IVP_DOUBLE)v1->k[2] - v2->k[2];
+    a = v1->k[0] - v2->k[0];
+    b = v1->k[1] - v2->k[1];
+    c = v1->k[2] - v2->k[2];
 
     k[0] = (IVP_FLOAT)a;
     k[1] = (IVP_FLOAT)b;
@@ -101,9 +101,9 @@ inline void IVP_U_Float_Point::subtract(const IVP_U_Float_Point *v1,const IVP_U_
 
 inline void IVP_U_Float_Point::inline_subtract_and_mult(const IVP_U_Float_Point *v1,const IVP_U_Float_Point *v2, IVP_DOUBLE factor){	// vektor addition
     IVP_DOUBLE a,b,c;
-    a = ((IVP_DOUBLE)v1->k[0] - v2->k[0]);
-    b = ((IVP_DOUBLE)v1->k[1] - v2->k[1]);	a *= factor;
-    c = ((IVP_DOUBLE)v1->k[2] - v2->k[2]);	b *= factor;
+    a = (v1->k[0] - v2->k[0]);
+    b = (v1->k[1] - v2->k[1]);	a *= factor;
+    c = (v1->k[2] - v2->k[2]);	b *= factor;
     c *=factor;
     k[0] = a;
     k[1] = b;
@@ -111,14 +111,14 @@ inline void IVP_U_Float_Point::inline_subtract_and_mult(const IVP_U_Float_Point 
 }
 
 inline IVP_DOUBLE IVP_U_Float_Point::quad_length() const {
-    return ((IVP_DOUBLE)k[0]*k[0] + (IVP_DOUBLE)k[1]*k[1] + (IVP_DOUBLE)k[2]*k[2]);
+    return (k[0]*k[0] + k[1]*k[1] + k[2]*k[2]);
 }
 
 
 inline IVP_DOUBLE IVP_U_Float_Point::quad_distance_to(const IVP_U_Float_Point *p)const{
-    IVP_DOUBLE a = (IVP_DOUBLE)k[0] - p->k[0];
-    IVP_DOUBLE b = (IVP_DOUBLE)k[1] - p->k[1];
-    IVP_DOUBLE c = (IVP_DOUBLE)k[2] - p->k[2];
+    IVP_DOUBLE a = k[0] - p->k[0];
+    IVP_DOUBLE b = k[1] - p->k[1];
+    IVP_DOUBLE c = k[2] - p->k[2];
     a *=a; b*= b; c*=c;
     return a+b+c;
 }
@@ -180,24 +180,24 @@ inline void IVP_U_Matrix::inline_vmult4(const IVP_U_Float_Point *p_in, IVP_U_Flo
 
 void IVP_U_Float_Point::inline_calc_cross_product(const IVP_U_Float_Point *v1,const IVP_U_Float_Point *v2)
 {
-    IVP_DOUBLE a = (IVP_DOUBLE)v1->k[1]*v2->k[2];
-    IVP_DOUBLE a2 = (IVP_DOUBLE)v2->k[1]*v1->k[2];
-    IVP_DOUBLE b = (IVP_DOUBLE)v1->k[2]*v2->k[0];
-    IVP_DOUBLE b2 = (IVP_DOUBLE)v2->k[2]*v1->k[0];	a -= a2;
-    IVP_DOUBLE c = (IVP_DOUBLE)v1->k[0]*v2->k[1];
-    IVP_DOUBLE c2 = (IVP_DOUBLE)v2->k[0]*v1->k[1];	b -= b2;
+    IVP_DOUBLE a = v1->k[1]*v2->k[2];
+    IVP_DOUBLE a2 = v2->k[1]*v1->k[2];
+    IVP_DOUBLE b = v1->k[2]*v2->k[0];	
+    IVP_DOUBLE b2 = v2->k[2]*v1->k[0];	a -= a2;
+    IVP_DOUBLE c = v1->k[0]*v2->k[1];
+    IVP_DOUBLE c2 = v2->k[0]*v1->k[1];	b -= b2;
     k[0] = (IVP_FLOAT)a;k[1] = (IVP_FLOAT)b;			c -= c2;
     k[2] = (IVP_FLOAT)c;  
 }
 
 void IVP_U_Float_Point::inline_calc_cross_product_and_normize(const IVP_U_Float_Point *v1,const IVP_U_Float_Point *v2)
 {
-    IVP_DOUBLE a = (IVP_DOUBLE)v1->k[1]*v2->k[2];
-    IVP_DOUBLE a2 = (IVP_DOUBLE)v2->k[1]*v1->k[2];
-    IVP_DOUBLE b = (IVP_DOUBLE)v1->k[2]*v2->k[0];
-    IVP_DOUBLE b2 = (IVP_DOUBLE)v2->k[2]*v1->k[0];	a -= a2;
-    IVP_DOUBLE c = (IVP_DOUBLE)v1->k[0]*v2->k[1];
-    IVP_DOUBLE c2 = (IVP_DOUBLE)v2->k[0]*v1->k[1];	b -= b2;
+    IVP_DOUBLE a = v1->k[1]*v2->k[2];
+    IVP_DOUBLE a2 = v2->k[1]*v1->k[2];
+    IVP_DOUBLE b = v1->k[2]*v2->k[0];	
+    IVP_DOUBLE b2 = v2->k[2]*v1->k[0];	a -= a2;
+    IVP_DOUBLE c = v1->k[0]*v2->k[1];
+    IVP_DOUBLE c2 = v2->k[0]*v1->k[1];	b -= b2;
     k[0] = (IVP_FLOAT)a;k[1] = (IVP_FLOAT)b;			c -= c2;
     k[2] = (IVP_FLOAT)c;
     this->normize();

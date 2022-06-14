@@ -1776,9 +1776,9 @@ bool CPhysicsCollision::TraceBoxAA( const Ray_t &ray, const CPhysCollide *pColli
 void CPhysicsCollision::DuplicateAndScale(vcollide_t* pOut, const vcollide_t* pIn, float flScale)
 {
 	*pOut = *pIn;
+
 }
 // mmz end
-
 void CPhysicsCollision::CollideGetMassCenter( CPhysCollide *pCollide, Vector *pOutMassCenter )
 {
 	*pOutMassCenter = pCollide->GetMassCenter();

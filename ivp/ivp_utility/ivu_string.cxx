@@ -9,7 +9,11 @@
 #include <ctype.h>
 
 #if !defined(__MWERKS__) || !defined(__POWERPC__)
+#ifdef OSX
+#include <malloc/malloc.h>
+#else
 #include <malloc.h>
+#endif
 #endif
 #ifdef _WIN32
 #	ifndef _XBOX
@@ -53,8 +57,8 @@ const char *P_String::find_string(const char *str, const char *key, int upper_ca
 */
     if ( str == NULL ) return NULL;
     
-	const char  *p1, *p2;
-	char b;
+	register const char  *p1, *p2;
+	register char b;
 	switch (upper_case) {
 	case 1:
 		for (p1 = str, p2 = key; *p1;) {

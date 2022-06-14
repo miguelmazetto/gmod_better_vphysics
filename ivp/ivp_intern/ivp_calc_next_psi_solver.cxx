@@ -87,15 +87,11 @@ inline void IVP_Calc_Next_PSI_Solver::calc_rotation_matrix(IVP_FLOAT delta_sim_t
 
   const IVP_U_Float_Point *ri = pc->get_rot_inertia();
   const IVP_U_Float_Point *iri = pc->get_inv_rot_inertia();
-  
-  // mmz: add this
-  // if (isinf(ri->k[0])) return;
 
   IVP_U_Point diff_other_rot_inertia_div_this(
-	  (ri->k[1] - ri->k[2]) * iri->k[0],
-	  (ri->k[2] - ri->k[0]) * iri->k[1],
-	  (ri->k[0] - ri->k[1]) * iri->k[2]);
-
+	(ri->k[1] - ri->k[2]) * iri->k[0],
+	(ri->k[2] - ri->k[0]) * iri->k[1],
+	(ri->k[0] - ri->k[1]) * iri->k[2]);
   for (int i = 1;; i++){
       IVP_U_Float_Point hp;
       hp.set ( pc->rot_speed.k[1] * pc->rot_speed.k[2] * diff_other_rot_inertia_div_this.k[0],

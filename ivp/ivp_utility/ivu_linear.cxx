@@ -21,7 +21,6 @@
 #endif
 
 
-
 #include <ivu_float.hxx>
 #include <ivu_string.cxx>
 

@@ -16,7 +16,6 @@
 #include "filesystem_helpers.h"
 #include "bspfile.h"
 #include "utlbuffer.h"
-
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -109,7 +108,7 @@ void CVPhysicsParse::NextBlock( void )
 
 const char *CVPhysicsParse::GetCurrentBlockName( void )
 {
-	if (m_pText)
+	if ( m_pText )
 		return m_blockName;
 
 	return NULL;
@@ -162,7 +161,6 @@ void CVPhysicsParse::ParseSolid( solid_t *pSolid, IVPhysicsKeyHandler *unknownKe
 		if ( key[0] == '}' )
 		{
 			NextBlock();
-			ivp_message("%s\n\tindex: %d\n\tmass: %f\n", pSolid->name, pSolid->index, pSolid->params.mass);
 			return;
 		}
 
@@ -193,7 +191,8 @@ void CVPhysicsParse::ParseSolid( solid_t *pSolid, IVPhysicsKeyHandler *unknownKe
 		}
 		else if ( !Q_stricmp( key, "inertia" ) )
 		{
-			pSolid->params.inertia = atof(value);
+			float inertia = atof(value);
+			pSolid->params.inertia = (inertia > 1e14f) ? 1e14f : inertia;
 		}
 		else if ( !Q_stricmp( key, "damping" ) )
 		{
@@ -487,7 +486,8 @@ void CVPhysicsParse::ParseVehicleWheel( vehicle_wheelparams_t &wheel )
 		}
 		else if ( !Q_stricmp( key, "inertia" ) )
 		{
-			wheel.inertia = atof( value );
+			float inertia = atof(value);
+			wheel.inertia = (inertia > 1e14f) ? 1e14f : inertia;
 		}
 		else if ( !Q_stricmp( key, "damping" ) )
 		{
@@ -923,7 +923,6 @@ void CVPhysicsParse::ParseCustom( void *pCustom, IVPhysicsKeyHandler *unknownKey
 
 IVPhysicsKeyParser *CreateVPhysicsKeyParser( const char *pKeyData )
 {
-	ivp_message("solids addr: %zX\n",pKeyData - sizeof(char*));
 	return new CVPhysicsParse( pKeyData );
 }
 
@@ -941,7 +940,7 @@ const char *ParseKeyvalue( const char *pBuffer, char (&key)[MAX_KEYVALUE], char 
 	// Make sure value is always null-terminated.
 	value[0] = 0;
 
-	pBuffer = ParseFile( pBuffer, key, NULL, NULL, 1024 );
+	pBuffer = ParseFile( pBuffer, key, NULL );
 
 	// no value on a close brace
 	if ( key[0] == '}' && key[1] == 0 )
@@ -952,7 +951,7 @@ const char *ParseKeyvalue( const char *pBuffer, char (&key)[MAX_KEYVALUE], char 
 
 	Q_strlower( key );
 	
-	pBuffer = ParseFile( pBuffer, value, NULL, NULL, 1024 );
+	pBuffer = ParseFile( pBuffer, value, NULL );
 
 	Q_strlower( value );
 

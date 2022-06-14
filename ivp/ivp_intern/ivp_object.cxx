@@ -288,12 +288,12 @@ void IVP_Real_Object::update_exact_mindist_events_of_object() {
     IVP_Synapse_Real *syn, *syn_next;	// minimal dist may remove itself from list
     for (syn = this->get_first_exact_synapse(); syn; syn = syn_next){
 	syn_next= syn->get_next();
-	IVP_Mindist *mindist = syn->get_mindist();    
+	IVP_Mindist *mindist = syn->get_mindist();
 	IVP_Core *core0 = mindist->get_synapse(0)->get_object()->physical_core;
 	IVP_Core *core1 = mindist->get_synapse(1)->get_object()->physical_core;
 	//at least one core has already right time code
 	if(core0->mindist_event_already_done != core1->mindist_event_already_done) {	  /// #+# OS: vector for recalc mindists
-	  mindist->recalc_mindist();			// should not be needed as the current position has not changed
+	  mindist->recalc_mindist(); // should not be needed as the current position has not changed
 	  if (mindist->recalc_result == IVP_MDRR_OK){ 
 	    mindist->update_exact_mindist_events(IVP_FALSE, IVP_EH_BIG_DELAY);	// check length, do not check for hull, update time manager ...
 	  }
@@ -306,6 +306,7 @@ IVP_BOOL IVP_Real_Object::disable_simulation() {
     if(core->physical_unmoveable) {
         return IVP_TRUE;
     }
+
     if(core->is_in_wakeup_vec) {
         core->environment->remove_revive_core(core);
     }

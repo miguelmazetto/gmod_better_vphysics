@@ -194,11 +194,19 @@ typedef unsigned char	uchar; // feel free to remove these three typedefs
 typedef unsigned short	ushort;
 typedef unsigned int	uint;
 
+#ifdef PLATFORM_64BITS
+typedef long long			intp;
+typedef unsigned long long	uintp;
+#else
+typedef int					intp;
+typedef unsigned int		uintp;
+#endif
+
 typedef const char *IVP_ERROR_STRING;
 #define IVP_NO_ERROR 0
 
 #if defined(PSXII) || defined(LINUX) || defined(GEKKO)
-#   define IVP_ALIGN_16  __attribute__ ((aligned(16)))
+//#   define IVP_ALIGN_16  __attribute__ ((aligned(16)))
 #endif
 
 #if !defined(IVP_ALIGN_16)
@@ -227,21 +235,17 @@ enum IVP_RETURN_TYPE {
 
 #define IVP_CDECL       /* set this to whatever you need to satisfy your linker */
 
-#if defined(LINUX)
-#if defined(ANDROID)
-#define __THROW
-#endif
-	/*extern "C" {
-	    void free(void *) __THROW;
-	    void *memset( void *, int, unsigned int) __THROW;
-	};*/
-#else
 #if !defined(__MWERKS__) || !defined(__POWERPC__)
-#	include <malloc.h>
+#   ifdef OSX
+#       include <malloc/malloc.h>
+#   else
+#       include <malloc.h>
+#   endif
 #endif
-#	include <string.h>
-#endif
-	
+
+#include <string.h>
+
+
 	char * IVP_CDECL p_calloc(int nelem,int size);
 	void * IVP_CDECL p_realloc(void* memblock, int size);
 	void * IVP_CDECL p_malloc(unsigned int size);
@@ -279,7 +283,7 @@ extern void ivp_memory_check(void *a);
 
 #define P_FLOAT_EPS 1e-10f	// used for division checking
 #define P_FLOAT_RES 1e-6f	// float resolution for numbers < 1.0
-#define P_FLOAT_MAX 1e20f
+#define P_FLOAT_MAX 1e16f
 
 #ifdef IVP_NO_DOUBLE
 #	define IVP_PI        3.14159265358979323846f	/* pi */
@@ -292,10 +296,10 @@ extern void ivp_memory_check(void *a);
 #else
 #	define IVP_PI        3.14159265358979323846	/* pi */
 #	define IVP_PI_2      1.57079632679489661923	/* pi/2 */
-#	define P_DOUBLE_MAX 10e100
+#	define P_DOUBLE_MAX 1e20
 #	define P_DOUBLE_RES 1E-12	// double resolution for numbers < 1.0
 #	define IVP_3D_SOLVER_NULLSTELLE_EPS 1e-8
-#	define P_DOUBLE_EPS 10e-20	// used for division checking
+#	define P_DOUBLE_EPS 1e-10	// used for division checking
 #	define P_MAX_WORLD_DOUBLE 10000 // max world koords
 #endif
 

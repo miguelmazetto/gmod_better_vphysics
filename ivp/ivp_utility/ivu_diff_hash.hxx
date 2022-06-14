@@ -12,16 +12,16 @@
 *		    if an input entry is found it is moved to 
 *		    the start of the vector
 * Input		    CMP is a class which defines an inline calc_hash_index
-*		    and in inline CMP::are_equal( BASECLASS, SEARCHCLASS)
-*		    FVECTOR is a IVU_FVector<BASECLASS>
-*		    BASECLASS is vector element class
-*		    SEARCHCLASS is the class used as a key and is passed to CMP::xxx()
-* Note              Hash Key is based on 2 SEARCHCLASS elements:
+*		    and in inline CMP::are_equal( BASE, SEARCH)
+*		    FVECTOR is a IVU_FVector<BASE>
+*		    BASE is vector element class
+*		    SEARCH is the class used as a key and is passed to CMP::xxx()
+* Note              Hash Key is based on 2 SEARCH elements:
 *			search:   the element to search for
 *			reference: the reference element
 ****************************************************************/
 
-template<class CMP,class FVECTOR,class BASECLASS,class SEARCHCLASS>
+template<class CMP,class FVECTOR,class BASE,class SEARCH>
 class IVP_Diff_Hash {
 public:
     short *hash_to_vector_index;
@@ -30,7 +30,7 @@ public:
     FVECTOR *base_vector;
     int	    n_found_objects;
 
-    IVP_Diff_Hash( FVECTOR *base, short *buffer, int buffer_size, SEARCHCLASS *reference ){
+    IVP_Diff_Hash( FVECTOR *base, short *buffer, int buffer_size, SEARCH *reference ){
 	if (buffer_size <= base->len()){
 	    private_buffer = IVP_TRUE;
 	    int x = buffer_size;
@@ -51,7 +51,7 @@ public:
 	{
 	    // insert all existing elements
 	    for (int i = base_vector->len()-1; i>=0;i--){
-		BASECLASS *b = base_vector->element_at(i);
+		BASE *b = base_vector->element_at(i);
 		for (int index = CMP::calc_hash_index(b,reference);;	index++){
 		    index &= buffersize_minus_one;
 		    if (hash_to_vector_index[index] == -1){ // free place found
@@ -66,14 +66,14 @@ public:
     // returns true if element is already in base vector and resorts basevector
     // accordingly if found
     // reference is the reference element
-    BASECLASS *check_element( SEARCHCLASS *elem, SEARCHCLASS *reference ){
+    BASE *check_element( SEARCH *elem, SEARCH *reference ){
 	for (int index = CMP::calc_hash_index(elem);;index++){
 	    index &= buffersize_minus_one;
 	    int vector_index = hash_to_vector_index[index];
 	    if (vector_index == -1){
 		return NULL;
 	    }
-	    BASECLASS *base_elem = base_vector->element_at(vector_index);
+	    BASE *base_elem = base_vector->element_at(vector_index);
 	    if ( !CMP::are_equal( base_elem, elem )){
 		continue;
 	    }
@@ -81,7 +81,7 @@ public:
 	    IVP_ASSERT( vector_index >= n_found_objects);
 	    if (vector_index > n_found_objects){
 		// swap elems in base vector:  n_found_objects : vector_index
-		BASECLASS *nfb = base_vector->element_at(n_found_objects);
+		BASE *nfb = base_vector->element_at(n_found_objects);
 		// search and mark existing position
 		for ( int i = CMP::calc_hash_index(nfb,reference);; i++){
 		    i &= buffersize_minus_one;

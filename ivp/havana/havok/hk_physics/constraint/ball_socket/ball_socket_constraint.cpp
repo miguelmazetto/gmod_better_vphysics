@@ -17,10 +17,21 @@ class hk_Ball_Socket_Work
 {
 	public:
 	
+#ifdef HK_ARCH_PPC
 		static inline void *operator new (size_t size, void *addr){
 			return addr;
 		}
+#else
+		static inline void *operator new (size_t size, void *addr){
+			return addr;
+		}
+		
+		static inline void operator delete (void *, void *){
+		}
 
+#endif
+
+		
 		hk_Vector3 dir;
 		hk_VM_Query_Builder< hk_VMQ_Storage<3> > query_engine;
 };

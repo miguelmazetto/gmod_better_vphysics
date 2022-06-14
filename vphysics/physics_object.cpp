@@ -9,6 +9,7 @@
 #include "ivp_compact_ledge.hxx"
 #include "ivp_compact_ledge_solver.hxx"
 #include "ivp_mindist.hxx"
+#include "ivp_mindist_intern.hxx"
 #include "ivp_friction.hxx"
 #include "ivp_phantom.hxx"
 #include "ivp_listener_collision.hxx"
@@ -126,7 +127,7 @@ void CPhysicsObject::Init( const CPhysCollide *pCollisionModel, IVP_Real_Object 
 	m_dragCoefficient = drag;
 	m_angDragCoefficient = angDrag;
 
-	SetVolume(volume);
+	SetVolume( volume );
 }
 
 CPhysicsObject::~CPhysicsObject( void )
@@ -174,6 +175,11 @@ CPhysicsObject::~CPhysicsObject( void )
 void CPhysicsObject::Wake( void )
 {
 	m_pObject->ensure_in_simulation();
+}
+
+void CPhysicsObject::WakeNow( void )
+{
+	m_pObject->ensure_in_simulation_now();
 }
 
 // supported
@@ -594,8 +600,9 @@ void CPhysicsObject::SetMass( float mass )
 		EnableMotion(true);
 	}
 
-	Assert( mass > 0 );
-	mass = clamp( mass, 0, VPHYSICS_MAX_MASS ); // NOTE: Allow zero procedurally, but not by initialization
+	Assert( mass > 0 ); // mmz note: go back to this
+	//mass = clamp( mass, 0, VPHYSICS_MAX_MASS ); // NOTE: Allow zero procedurally, but not by initialization
+	mass = clamp( mass, 1.f, VPHYSICS_MAX_MASS );
 	m_pObject->change_mass( mass );
 	SetVolume( m_volume );
 	RecomputeDragBases();
@@ -643,6 +650,9 @@ void CPhysicsObject::SetInertia( const Vector &inertia )
 	ri.k[0] = IVP_Inline_Math::fabsd(ri.k[0]);
 	ri.k[1] = IVP_Inline_Math::fabsd(ri.k[1]);
 	ri.k[2] = IVP_Inline_Math::fabsd(ri.k[2]);
+
+	if( ri.k[0] > 1e14f ) ri.k[0] = 1e14f; if( ri.k[1] > 1e14f ) ri.k[1] = 1e14f; if( ri.k[2] > 1e14f ) ri.k[2] = 1e14f;
+
 	m_pObject->get_core()->set_rotation_inertia( &ri );
 }
 
@@ -1475,8 +1485,7 @@ bool CPhysicsObject::IsAttachedToConstraint( bool bExternalOnly ) const
 
 static void InitObjectTemplate( IVP_Template_Real_Object &objectTemplate, int materialIndex, objectparams_t *pParams, bool isStatic )
 {
-	objectTemplate.mass = pParams->mass;
-	objectTemplate.mass = clamp( objectTemplate.mass, VPHYSICS_MIN_MASS, VPHYSICS_MAX_MASS );
+	objectTemplate.mass = clamp( pParams->mass, VPHYSICS_MIN_MASS, VPHYSICS_MAX_MASS );
 
 	if ( materialIndex >= 0 )
 	{
@@ -1508,8 +1517,9 @@ static void InitObjectTemplate( IVP_Template_Real_Object &objectTemplate, int ma
 	if ( inertia <= 0 )
 		inertia = 1.0;
 
-	if ( inertia > 1e18f )
-		inertia = 1e18f;
+	//mmz
+	if ( inertia > 1e14f )
+		inertia = 1e14f;
 
 	objectTemplate.rot_inertia.set(inertia, inertia, inertia);
 	objectTemplate.rot_speed_damp_factor.set(pParams->rotdamping, pParams->rotdamping, pParams->rotdamping);
