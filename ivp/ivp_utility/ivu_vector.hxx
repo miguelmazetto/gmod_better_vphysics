@@ -43,7 +43,7 @@ public:
 	memsize = size;
 	n_elems = 0;
 	if (size){		// will be optimized by most compilers
-	    elems = (void **)p_malloc(size*sizeof(void *));
+	    elems = (void **)p_malloc(size*sizeof(void*)); // mmz: fix bug
 	}else{	
 	    elems = (void **)NULL;
 	}

@@ -21,13 +21,36 @@
 #   endif
 #endif
 
+// mmz: help debug
+#define IVU_CHECKINFNAN
+#ifdef IVU_CHECKINFNAN
+
+#ifdef _WIN32
+#include <intrin.h>
+#define IVP_DBG_BREAK __debugbreak
+#else
+#define IVP_DBG_BREAK __builtin_trap
+#endif
+
+static bool IVU_IGNORENEXT = false;
+
+#define IVU_IGNORE() {IVU_IGNORENEXT = true;}
+#define IVU_INFNAN(a) {\
+    if(IVU_IGNORENEXT) IVU_IGNORENEXT = false;\
+    else if(isinf(a) || isnan(a)) IVP_DBG_BREAK();}
+#else
+#define IVU_IGNORE()
+#define IVU_INFNAN(a)
+#endif
 
 inline void IVP_U_Float_Point::set(IVP_FLOAT k0, IVP_FLOAT k1, IVP_FLOAT k2){
+    IVU_INFNAN(k0);
     k[0] = k0; k[1] = k1; k[2] = k2;
 }
 
 
 inline void IVP_U_Float_Point3::set(const IVP_FLOAT p[3]){
+    IVU_INFNAN(p[0]);
     k[0]= p[0];
     k[1]= p[1];
     k[2]= p[2];
@@ -35,6 +58,7 @@ inline void IVP_U_Float_Point3::set(const IVP_FLOAT p[3]){
 
 #if !defined(IVP_NO_DOUBLE)
 inline void IVP_U_Float_Point3::set(const IVP_DOUBLE p[3]){
+    IVU_INFNAN(p[0]);
     k[0]= p[0];
     k[1]= p[1];
     k[2]= p[2];
@@ -42,6 +66,7 @@ inline void IVP_U_Float_Point3::set(const IVP_DOUBLE p[3]){
 #endif
 
 inline void IVP_U_Float_Point::set(const IVP_FLOAT p[3]){
+    IVU_INFNAN(p[0]);
     k[0]= p[0];
     k[1]= p[1];
     k[2]= p[2];
@@ -49,18 +74,23 @@ inline void IVP_U_Float_Point::set(const IVP_FLOAT p[3]){
 
 
 inline void IVP_U_Float_Point::subtract(const IVP_U_Float_Point *v2){	// vector subtraction
+    IVU_INFNAN(v2->k[0]);
     this->subtract(this,v2);
 }
 
 inline void IVP_U_Float_Point::add(const IVP_U_Float_Point *v2){	// vector subtraction
+    IVU_INFNAN(v2->k[0]);
     this->add(this,v2);
 }
 
 inline void IVP_U_Float_Point::add_multiple(const IVP_U_Float_Point *v2, IVP_DOUBLE f){	// vector
+    IVU_INFNAN(v2->k[0]);
+    IVU_INFNAN(f);
     this->add_multiple(this,v2,f);
 }
 
 inline void IVP_U_Float_Point::set_multiple(const IVP_U_Quat *q_source, IVP_DOUBLE f){
+    IVU_INFNAN(f);
     this->set_multiple( (IVP_U_Float_Point *)q_source, f);
 }
 

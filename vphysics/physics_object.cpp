@@ -126,7 +126,7 @@ void CPhysicsObject::Init( const CPhysCollide *pCollisionModel, IVP_Real_Object 
 	m_dragCoefficient = drag;
 	m_angDragCoefficient = angDrag;
 
-	SetVolume( volume );
+	SetVolume(volume);
 }
 
 CPhysicsObject::~CPhysicsObject( void )
@@ -1553,17 +1553,19 @@ CPhysicsObject *CreatePhysicsObject( CPhysicsEnvironment *pEnvironment, const CP
 
 	IVP_U_Matrix massCenterMatrix;
 	massCenterMatrix.init();
-
-	// mmz: fixme
-	pParams->massCenterOverride = NULL;
-
-	if ( pParams->massCenterOverride )
+	
+	// mmz: even after reading this correctly, it doesn't seem right
+	//pParams->massCenterOverride = nullptr;
+	float conv = *((float*)&pParams->massCenterOverride);
+	ivp_message("conv: %x %f\n", pParams->massCenterOverride, conv);
+	/*if (pParams->massCenterOverride && conv != 1.0f)
 	{
 		IVP_U_Point center;
-		ConvertPositionToIVP( *pParams->massCenterOverride, center );
+		// ConvertPositionToIVP( &pParams->massCenterOverride , center );
+		ConvertPositionToIVP( *pParams->massCenterOverride , center );
 		massCenterMatrix.shift_os( &center );
-		objectTemplate.mass_center_override = &massCenterMatrix;
-	}
+	}*/
+	objectTemplate.mass_center_override = &massCenterMatrix;
 
 	CPhysicsObject *pObject = new CPhysicsObject();
 	short collideType;

@@ -86,16 +86,15 @@ inline void IVP_Calc_Next_PSI_Solver::calc_rotation_matrix(IVP_FLOAT delta_sim_t
   q_core_f_core->set_very_fast_multiple( &pc->rot_speed,dt);
 
   const IVP_U_Float_Point *ri = pc->get_rot_inertia();
-
-  // mmz: add this
-  if (isinf(ri->k[0])) return;
-
   const IVP_U_Float_Point *iri = pc->get_inv_rot_inertia();
+  
+  // mmz: add this
+  // if (isinf(ri->k[0])) return;
 
   IVP_U_Point diff_other_rot_inertia_div_this(
-	(ri->k[1] - ri->k[2]) * iri->k[0],
-	(ri->k[2] - ri->k[0]) * iri->k[1],
-	(ri->k[0] - ri->k[1]) * iri->k[2]);
+	  (ri->k[1] - ri->k[2]) * iri->k[0],
+	  (ri->k[2] - ri->k[0]) * iri->k[1],
+	  (ri->k[0] - ri->k[1]) * iri->k[2]);
 
   for (int i = 1;; i++){
       IVP_U_Float_Point hp;
@@ -165,7 +164,7 @@ void IVP_Calc_Next_PSI_Solver::calc_next_PSI_matrix(IVP_Event_Sim *event_sim,IVP
    IVP_IF(1) {
         IVP_Debug_Manager *dm=event_sim->environment->get_debug_manager();
 	if(dm->file_out_impacts) {
-	    fprintf(dm->out_deb_file,"making_calc_next_psi %lx at %f\n",0x0000ffff&(long)this,core->environment->get_current_time().get_time());
+	    fprintf(dm->out_deb_file,"making_calc_next_psi %zx at %f\n",0x0000ffff&(size_t)this,core->environment->get_current_time().get_time());
 	}
     }    
 

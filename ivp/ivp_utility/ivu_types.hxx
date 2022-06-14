@@ -134,6 +134,13 @@ typedef float IVP_FLOAT;
 typedef int IVP_INT32;
 typedef unsigned int IVP_UINT32;
 
+// mmz: added this
+#if defined(_WIN64) || defined(__x86_64__)
+typedef long long int IVP_SSIZET;
+#else
+typedef int IVP_SSIZET;
+#endif
+
 // ************************
 #ifndef IVP_NO_DOUBLE
 typedef double IVP_DOUBLE;
@@ -303,7 +310,7 @@ IVP_FLOAT ivp_rand();		// returns [0 .. 1]
 #	define IVP_NO_ALLOCA
 #endif
 
-#if defined(WIN32)
+#if defined(_WIN32)
 #   if defined(IVP_PIII) || defined(IVP_WILLAMETTE)
 #   	if defined(IVP_PIII)
 #		define IVP_PREFETCH_CLINE_SIZE 0x20

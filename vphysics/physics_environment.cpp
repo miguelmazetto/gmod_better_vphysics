@@ -262,6 +262,7 @@ public:
 		}
 		if ( m_pCallback )
 		{
+			ivp_message("sizeof: %u\n", sizeof(*pObject));
 			m_pCallback->ObjectWake( pObject );
 		}
 	}

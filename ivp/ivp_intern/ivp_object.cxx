@@ -792,8 +792,14 @@ void IVP_Real_Object::calc_at_quaternion(IVP_Time      current_time,
     }
 }
 
-
-
+//IVP_FLOAT min_inertia_value = rot_inertia.real_length() * templ->auto_check_rot_inertia;
+IVP_FLOAT safe_real_len_mult(IVP_U_Float_Point p, IVP_FLOAT mult) {
+    IVP_DOUBLE x, y, z;
+    x = (IVP_DOUBLE)p.k[0] * mult;
+    y = (IVP_DOUBLE)p.k[1] * mult;
+    z = (IVP_DOUBLE)p.k[2] * mult;
+    return sqrt(x * x + y * y + z * z);
+}
 
 void IVP_Real_Object::init_object_core(IVP_Environment *i_environment, const IVP_Template_Real_Object *templ){
     // used for instances
@@ -863,7 +869,8 @@ void IVP_Real_Object::init_object_core(IVP_Environment *i_environment, const IVP
     }
 
     if( templ->auto_check_rot_inertia != 0.0f ) {
-        IVP_FLOAT min_inertia_value = rot_inertia.real_length() * templ->auto_check_rot_inertia;
+        //IVP_FLOAT min_inertia_value = rot_inertia.real_length() * templ->auto_check_rot_inertia;
+        IVP_FLOAT min_inertia_value = safe_real_len_mult(rot_inertia, templ->auto_check_rot_inertia);
 	int hh;
         for(hh=0;hh<3;hh++) {
 	    if(rot_inertia.k[hh]<min_inertia_value) {

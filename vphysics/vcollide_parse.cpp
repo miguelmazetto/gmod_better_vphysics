@@ -16,6 +16,7 @@
 #include "filesystem_helpers.h"
 #include "bspfile.h"
 #include "utlbuffer.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -77,12 +78,14 @@ private:
 
 	const char *m_pText;
 	char m_blockName[MAX_KEYVALUE];
+	CPhysCollide* solids;
 };
 
 
 CVPhysicsParse::CVPhysicsParse( const char *pKeyData )
 {
 	m_pText = pKeyData;
+	solids = *(CPhysCollide**)(pKeyData - sizeof(void*));
 	NextBlock();
 }
 
@@ -106,7 +109,7 @@ void CVPhysicsParse::NextBlock( void )
 
 const char *CVPhysicsParse::GetCurrentBlockName( void )
 {
-	if ( m_pText )
+	if (m_pText)
 		return m_blockName;
 
 	return NULL;
@@ -121,20 +124,35 @@ bool CVPhysicsParse::Finished( void )
 	return true;
 }
 
+//static solid_t lastmodified_solid;
+static solid_t *lastmodified_psolid;
 
 void CVPhysicsParse::ParseSolid( solid_t *pSolid, IVPhysicsKeyHandler *unknownKeyHandler )
 {
 	char key[MAX_KEYVALUE], value[MAX_KEYVALUE];
 	key[0] = 0;
 
-	// mmz: this stupid unintialized memory caused me 3 days of debugging and
+	// mmz: this stupid uninitialized memory caused me 3 days of debugging and
 	// reverse engineering.
-	value[0] = 0;
-	memset(pSolid, 0, sizeof(*pSolid));
 
-	if ( unknownKeyHandler )
-		unknownKeyHandler->SetDefaults( pSolid );
+	if (unknownKeyHandler)
+	{
+		if (pSolid != lastmodified_psolid) {
+			//memset((char*)pSolid+4, 0, sizeof(*pSolid) - sizeof(pSolid->params)-4);
+			pSolid->name[0] = 0;
+			pSolid->surfaceprop[0] = 0;
+			pSolid->massCenterOverride = Vector(0, 0, 0);
+		}
 
+
+		unknownKeyHandler->SetDefaults(pSolid);
+	}
+	else
+	{
+		memset(pSolid, 0, sizeof(*pSolid));
+	}
+	lastmodified_psolid = pSolid;
+	
 	// disable these until the ragdoll is created
 	pSolid->params.enableCollisions = false;
 
@@ -144,6 +162,7 @@ void CVPhysicsParse::ParseSolid( solid_t *pSolid, IVPhysicsKeyHandler *unknownKe
 		if ( key[0] == '}' )
 		{
 			NextBlock();
+			ivp_message("%s\n\tindex: %d\n\tmass: %f\n", pSolid->name, pSolid->index, pSolid->params.mass);
 			return;
 		}
 
@@ -904,6 +923,7 @@ void CVPhysicsParse::ParseCustom( void *pCustom, IVPhysicsKeyHandler *unknownKey
 
 IVPhysicsKeyParser *CreateVPhysicsKeyParser( const char *pKeyData )
 {
+	ivp_message("solids addr: %zX\n",pKeyData - sizeof(char*));
 	return new CVPhysicsParse( pKeyData );
 }
 

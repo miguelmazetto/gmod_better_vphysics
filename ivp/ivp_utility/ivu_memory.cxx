@@ -113,7 +113,7 @@ void p_free(void* data)
 #endif
 }
 
-#define IVP_MEMORY_MAGIC 0x65981234
+#define IVP_MEMORY_MAGIC (size_t)0x65981234
 struct IVP_Aligned_Memory {
     int magic_number;
     void *back_link;
@@ -128,7 +128,7 @@ void *ivp_malloc_aligned(int size, int alignment){
     IVP_Aligned_Memory *data = (IVP_Aligned_Memory*)p_malloc( (unsigned int) size);
     data->magic_number = IVP_MEMORY_MAGIC;
     
-    void *ret = (void *)((((size_t)data) + alignment + sizeof(IVP_Aligned_Memory) - 1) & (-alignment));
+    void *ret = (void *)(((size_t)data + alignment + sizeof(IVP_Aligned_Memory) - 1) & -(IVP_SSIZET)alignment);
     ((void **)ret)[-1] = (void *)data;
     return ret;
 #endif    
