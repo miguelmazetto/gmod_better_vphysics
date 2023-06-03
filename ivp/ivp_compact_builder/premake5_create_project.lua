@@ -6,7 +6,7 @@ group("IVP")
 		targetdir("%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}")
 		debugdir("%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}")
 		objdir("!%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}/intermediate/%{prj.name}")
-		sysincludedirs({
+		includedirs({
 			"../ivp_physics",
 			"../ivp_utility",
 			"../ivp_compact_builder",

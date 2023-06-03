@@ -64,7 +64,7 @@ struct simplex_t
 
 	Vector ClipRayToTetrahedronBase( const Vector &dir );
 	Vector ClipRayToTetrahedron( const Vector &dir );
-	float ClipRayToTriangle( const Vector &dir, float epsilon );
+	double ClipRayToTriangle( const Vector &dir, float epsilon );
 };
 
 class CTraceCone : public ITraceObject
@@ -112,7 +112,7 @@ public:
 
 	// BUGBUG: Doesn't work!
 	virtual Vector GetVertByIndex( int index ) const { return  m_cone.origin; }
-	virtual float Radius( void ) const { return m_cone.h + m_radius; }
+	virtual double Radius( void ) const { return m_cone.h + m_radius; }
 
 	truncatedcone_t	m_cone;
 	float			m_radius;
@@ -330,7 +330,7 @@ public:
 	// UNDONE: Do general ITraceObject center/offset computation and move the ray to account
 	// for this delta like we do in TraceSweepIVP()
 	// Then we can shrink the radius of objects with mass centers NOT at the origin
-	virtual float Radius( void ) const 
+	virtual double Radius( void ) const 
 	{ 
 		return m_radius;
 	}
@@ -865,7 +865,7 @@ public:
 	CTraceAABB( const Vector &hlmins, const Vector &hlmaxs, bool isPoint );
 	virtual int SupportMap( const Vector &dir, Vector *pOut ) const;
 	virtual Vector GetVertByIndex( int index ) const;
-	virtual float Radius( void ) const { return m_radius; }
+	virtual double Radius( void ) const { return m_radius; }
 
 private:
 	float	m_x[2];
@@ -1047,7 +1047,7 @@ public:
 	}
 
 	bool SweepSingleConvex( void );
-	float SolveMeshIntersection( simplex_t &simplex );
+	double SolveMeshIntersection( simplex_t &simplex );
 	float SolveMeshIntersection2D( simplex_t &simplex );
 	virtual void DoSweep( void )
 	{
@@ -2211,7 +2211,7 @@ Vector simplex_t::ClipRayToTetrahedron( const Vector &dir )
 	return vec3_origin;
 }
 
-float simplex_t::ClipRayToTriangle( const Vector &dir, float epsilon )
+double simplex_t::ClipRayToTriangle( const Vector &dir, float epsilon )
 {
 	Vector AB = verts[0].position - verts[2].position;
 	Vector AC = verts[1].position - verts[2].position;
@@ -2271,7 +2271,7 @@ float simplex_t::ClipRayToTriangle( const Vector &dir, float epsilon )
 // when a triangle is found intersecting the ray, reduce the simplex to that triangle
 // and then re-expand it to a tetrahedron using the support point normal to the triangle (away from the origin)
 // iterate until no new points can be found.  That's the surface of the sum.
-float CTraceSolver::SolveMeshIntersection( simplex_t &simplex )
+double CTraceSolver::SolveMeshIntersection( simplex_t &simplex )
 {
 	Vector tmp;
 	Assert( simplex.vertCount == 4 );
@@ -2315,7 +2315,7 @@ float CTraceSolver::SolveMeshIntersection( simplex_t &simplex )
 	}
 
 	Assert(0);
-	return 0.0f;
+	return 0.0;
 }
 
 // similar to SolveMeshIntersection, but solves projected into the 2D triangle simplex remaining

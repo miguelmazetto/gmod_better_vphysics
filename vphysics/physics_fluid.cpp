@@ -79,7 +79,7 @@ const IVP_Real_Object *CPhysicsFluidController::GetIVPObject() const
 	return m_pObject->GetObject();
 }
 
-float CPhysicsFluidController::GetDensity() const
+double CPhysicsFluidController::GetDensity() const
 {
 	return m_pBuoyancy->m_density;
 }

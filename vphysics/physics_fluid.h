@@ -28,7 +28,7 @@ public:
 	virtual void SetGameData( void *pGameData );
 	virtual void *GetGameData( void ) const;
 	virtual void GetSurfacePlane( Vector *pNormal, float *pDist ) const;
-	virtual float GetDensity() const;
+	virtual double GetDensity() const;
 	virtual void WakeAllSleepingObjects(); 
 	virtual int	GetContents() const;
 

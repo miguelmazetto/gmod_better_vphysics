@@ -5,7 +5,7 @@ function IncludeIVP_havana_constraints()
 
 	local _project = project()
 
-	sysincludedirs(current_dir .. "/../")
+	includedirs(current_dir .. "/../")
 	links({"havana_constraints"})
 
 	if refcount == 1 then

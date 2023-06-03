@@ -55,8 +55,8 @@ public:
 	CPhysConvex *ConvexFromConvexPolyhedron( const CPolyhedron &ConvexPolyhedron );
 	void ConvexesFromConvexPolygon( const Vector &vPolyNormal, const Vector *pPoints, int iPointCount, CPhysConvex **pOutput );
 	CPhysConvex	*RebuildConvexFromPlanes( CPhysConvex *pConvex, float mergeDistance );
-	float ConvexVolume( CPhysConvex *pConvex );
-	float ConvexSurfaceArea( CPhysConvex *pConvex );
+	double ConvexVolume( CPhysConvex *pConvex );
+	double ConvexSurfaceArea( CPhysConvex *pConvex );
 	CPhysCollide *ConvertConvexToCollide( CPhysConvex **pConvex, int convexCount );
 	CPhysCollide *ConvertConvexToCollideParams( CPhysConvex **pConvex, int convexCount, const convertconvexparams_t &convertParams );
 
@@ -79,8 +79,8 @@ public:
 	virtual void CollideGetAABB( Vector *pMins, Vector *pMaxs, const CPhysCollide *pCollide, const Vector &collideOrigin, const QAngle &collideAngles );
 	virtual Vector CollideGetExtent( const CPhysCollide *pCollide, const Vector &collideOrigin, const QAngle &collideAngles, const Vector &direction );
 	// compute the volume of a collide
-	virtual float			CollideVolume( CPhysCollide *pCollide );
-	virtual float			CollideSurfaceArea( CPhysCollide *pCollide );
+	virtual double			CollideVolume( CPhysCollide *pCollide );
+	virtual double			CollideSurfaceArea( CPhysCollide *pCollide );
 
 	// Free a collide that was created with ConvertConvexToCollide()
 	// UNDONE: Move this up near the other Collide routines when the version is changed
@@ -1113,7 +1113,7 @@ static void LedgeInsidePoint( IVP_Compact_Ledge *pLedge, Vector& out )
 // Input  : convex - the ledge
 // Output : float - volume in HL units (in^3)
 //-----------------------------------------------------------------------------
-float CPhysicsCollision::ConvexVolume( CPhysConvex *pConvex )
+double CPhysicsCollision::ConvexVolume( CPhysConvex *pConvex )
 {
 	IVP_Compact_Ledge *pLedge = (IVP_Compact_Ledge *)pConvex;
 	int triangleCount = pLedge->get_n_triangles();
@@ -1121,7 +1121,7 @@ float CPhysicsCollision::ConvexVolume( CPhysConvex *pConvex )
 	IVP_Compact_Triangle *pTri = pLedge->get_first_triangle();
 
 	Vector vert;
-	float volume = 0;
+	double volume = 0;
 	// vert is in HL units
 	LedgeInsidePoint( pLedge, vert );
 
@@ -1143,14 +1143,14 @@ float CPhysicsCollision::ConvexVolume( CPhysConvex *pConvex )
 }
 
 
-float CPhysicsCollision::ConvexSurfaceArea( CPhysConvex *pConvex )
+double CPhysicsCollision::ConvexSurfaceArea( CPhysConvex *pConvex )
 {
 	IVP_Compact_Ledge *pLedge = (IVP_Compact_Ledge *)pConvex;
 	int triangleCount = pLedge->get_n_triangles();
 
 	IVP_Compact_Triangle *pTri = pLedge->get_first_triangle();
 
-	float area = 0;
+	double area = 0;
 
 	for ( int j = 0; j < triangleCount; j++ )
 	{
@@ -1610,12 +1610,12 @@ void CPhysicsCollision::DestroyCollide( CPhysCollide *pCollide )
 }
 
 // calculate the volume of a collide by calling ConvexVolume on its parts
-float CPhysicsCollision::CollideVolume( CPhysCollide *pCollide )
+double CPhysicsCollision::CollideVolume( CPhysCollide *pCollide )
 {
 	IVP_U_BigVector<IVP_Compact_Ledge> ledges;
 	pCollide->GetAllLedges( ledges );
 
-	float volume = 0;
+	double volume = 0;
 	for ( int i = 0; i < ledges.len(); i++ )
 	{
 		volume += ConvexVolume( (CPhysConvex *)ledges.element_at(i) );
@@ -1625,12 +1625,12 @@ float CPhysicsCollision::CollideVolume( CPhysCollide *pCollide )
 }
 
 // calculate the volume of a collide by calling ConvexVolume on its parts
-float CPhysicsCollision::CollideSurfaceArea( CPhysCollide *pCollide )
+double CPhysicsCollision::CollideSurfaceArea( CPhysCollide *pCollide )
 {
 	IVP_U_BigVector<IVP_Compact_Ledge> ledges;
 	pCollide->GetAllLedges( ledges );
 
-	float area = 0;
+	double area = 0;
 	for ( int i = 0; i < ledges.len(); i++ )
 	{
 		area += ConvexSurfaceArea( (CPhysConvex *)ledges.element_at(i) );

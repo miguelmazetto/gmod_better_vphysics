@@ -135,6 +135,9 @@ public:
 	void			PreSave(const physpresaverestoreparams_t& params);
 	bool			Save(const physsaveparams_t& params);
 	void			PostSave();
+
+	virtual void CreateLimitedHingeConstraint(IPhysicsObject* pReferenceObject, IPhysicsObject* pAttachedObject, IPhysicsConstraintGroup* pGroup, void* ragdoll);
+
 	// mmz end
 	void PreRestore( const physpresaverestoreparams_t &params );
 	bool Restore( const physrestoreparams_t &params );

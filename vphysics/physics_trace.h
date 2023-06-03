@@ -145,7 +145,7 @@ class ITraceObject
 public:
 	virtual int SupportMap( const Vector &dir, Vector *pOut ) const = 0;
 	virtual Vector GetVertByIndex( int index ) const = 0;
-	virtual float Radius( void ) const = 0;
+	virtual double Radius( void ) const = 0;
 };
 
 // This is the size of the vertex hash

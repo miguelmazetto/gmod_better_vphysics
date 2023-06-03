@@ -852,10 +852,11 @@ public:
 			CPhysicsObject *pObject1 = static_cast<CPhysicsObject *>(ivp1->client_data);
 			if ( pObject0 && pObject1 )
 			{
-				if ( (pObject0->CallbackFlags() & CALLBACK_ENABLING_COLLISION) && (pObject1->CallbackFlags() & CALLBACK_MARKED_FOR_DELETE) )
+				auto o0_cf = pObject0->CallbackFlags(), o1_cf = pObject1->CallbackFlags();
+				if ( (o0_cf & CALLBACK_ENABLING_COLLISION) && (o1_cf & CALLBACK_MARKED_FOR_DELETE) )
 					return IVP_FALSE;
 
-				if ( (pObject1->CallbackFlags() & CALLBACK_ENABLING_COLLISION) && (pObject0->CallbackFlags() & CALLBACK_MARKED_FOR_DELETE) )
+				if ( (o1_cf & CALLBACK_ENABLING_COLLISION) && (o0_cf & CALLBACK_MARKED_FOR_DELETE) )
 					return IVP_FALSE;
 
 				if ( !m_pSolver->ShouldCollide( pObject0, pObject1, pObject0->GetGameData(), pObject1->GetGameData() ) )
@@ -2087,6 +2088,12 @@ void CPhysicsEnvironment::EnableConstraintNotify( bool bEnable )
 {
 	m_enableConstraintNotify = bEnable;
 }
+
+//mmz: start
+void CPhysicsEnvironment::CreateLimitedHingeConstraint(IPhysicsObject* pReferenceObject, IPhysicsObject* pAttachedObject, IPhysicsConstraintGroup* pGroup, void* ragdoll) {
+	::CreateHingeConstraint(m_pPhysEnv, (CPhysicsObject*)pReferenceObject, (CPhysicsObject*)pAttachedObject, pGroup, *(constraint_limitedhingeparams_t*)ragdoll);
+}
+//mmz: end
 
 
 IPhysicsEnvironment *CreatePhysicsEnvironment( void )

@@ -5,3 +5,4 @@ ivp/projects
 *.vcxproj
 testserver
 Makefile
+*.bak

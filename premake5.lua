@@ -1,3 +1,20 @@
+
+if _ACTION == 'clean' then
+	os.rmdir('projects')
+	os.rmdir('ivp/projects')
+
+	if os.ishost("windows") then
+		os.remove('*.sln')
+		os.remove('*.vcxproj')
+	end
+
+	return
+end
+
+if not externalincludedirs then
+	externalincludedirs = includedirs
+end
+
 include("sourcesdk-minimal")
 include("extrasdk")
 include("ivp/havana/havok/hk_base")
@@ -5,7 +22,6 @@ include("ivp/havana/havok/hk_math")
 include("ivp/havana/havok/hk_physics/constraint")
 include("ivp/ivp_compact_builder")
 include("ivp/ivp_physics")
---include("vstdlib")
 
 function HasIncludedPackage(name)
 	local _project = project()
@@ -30,7 +46,6 @@ function IncludePackage(name)
 	return refcount
 end
 
-
 workspace("gmod_better_vphysics")
 	language("C++")
 	warnings("Extra")
@@ -47,14 +62,15 @@ workspace("gmod_better_vphysics")
 	targetdir("%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}")
 	debugdir("%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}")
 	objdir("!%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}/intermediate/%{prj.name}")
-	sysincludedirs({"sourcesdk-minimal/public"})
+	includedirs({ "sourcesdk-minimal/public" })
 
 	platforms({"x86_64", "x86"})
+	defines({"VPROF_TELEMETRY_H"})
 
 	filter("platforms:x86")
 		architecture("x86")
 		libdirs({"sourcesdk-minimal/lib/public"})
-		defines({"_X86_"})
+		defines({"_X86_", "_M_IX86"})
 
 	filter("platforms:x86_64")
 		architecture("x86_64")

@@ -115,11 +115,11 @@ public:
 	void			WakeNow();
 	void			Sleep();
 	void			RecheckCollisionFilter();
-	void			RecheckContactPoints(bool bSearchForNewContacts = false); //lwss add bool for new version
+	void			RecheckContactPoints();
 
 	void			SetMass( float mass );
-	float			GetMass( void ) const;
-	float			GetInvMass( void ) const;
+	double			GetMass( void ) const;
+	double			GetInvMass( void ) const;
 	void			SetInertia( const Vector &inertia );
 	Vector			GetInertia( void ) const;
 	Vector			GetInvInertia( void ) const;
@@ -135,7 +135,7 @@ public:
 	unsigned int	GetContents() const { return m_contentsMask; }
 	void			SetContents( unsigned int contents );
 
-	float			GetSphereRadius() const;
+	double			GetSphereRadius() const;
 	void            SetSphereRadius(float radius); // lwss add
 	Vector			GetMassCenterLocalSpace() const;
 	float			GetEnergy() const;
@@ -162,7 +162,7 @@ public:
 	void			ApplyTorqueCenter( const AngularImpulse & );
 	void			CalculateForceOffset( const Vector &forceVector, const Vector &worldPosition, Vector *centerForce, AngularImpulse *centerTorque ) const;
 	void			CalculateVelocityOffset( const Vector &forceVector, const Vector &worldPosition, Vector *centerVelocity, AngularImpulse *centerAngularVelocity ) const;
-	float			CalculateLinearDrag( const Vector &unitDirection ) const;
+	double			CalculateLinearDrag( const Vector &unitDirection ) const;
 	float			CalculateAngularDrag( const Vector &objectSpaceRotationAxis ) const;
 
 	bool			GetContactPoint( Vector *contactPoint, IPhysicsObject **contactObject ) const;

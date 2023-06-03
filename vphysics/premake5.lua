@@ -1,5 +1,6 @@
-local testserver = _SCRIPT_DIR .. "/../testserver"
-local sdklibs = _SCRIPT_DIR .. "/../sourcesdk-minimal/lib/public"
+local testserver = "../../../testserver"
+
+local sdklibs = "../sourcesdk-minimal/lib/public"
 
 project("vphysics")
 	_project = project()
@@ -8,10 +9,6 @@ project("vphysics")
 	language("C++")
 	warnings("Default")
 	location("../projects/" .. os.target() .. "/" .. _ACTION)
-	
-	--libdirs({
-	--	"../ivp/projects/" .. os.target() .. "/" .. _ACTION
-	--})
 
 	filter({"system:linux","platforms:x86"})
 		libdirs({sdklibs.."/linux32"})
@@ -19,15 +16,9 @@ project("vphysics")
 	filter({"system:linux","platforms:x86_64"})
 		libdirs({sdklibs.."/linux64"})
 
-	--filter("platforms:x86")
-	--	libdirs({sdklibs})
-
-	--filter("platforms:x86_64")
-	--	libdirs({sdklibs.."/x64"})
-
 	filter({})
 
-	sysincludedirs({
+	includedirs ({
 		"../sourcesdk-minimal/public",
 		"../ivp/ivp_intern",
 		"../ivp/ivp_collision",
@@ -86,14 +77,16 @@ project("vphysics")
 		buildoptions { "-march=native" }
 
 	--Debug
-	if os.isdir(testserver) then
+	if os.isdir(_SCRIPT_DIR .. "/../testserver") then
 		filter({"platforms:x86","system:windows"})
-			postbuildcommands({"{COPY} %{cfg.targetdir}/vphysics.dll "..testserver.."/bin"})
-			debugcommand(testserver.."/srcds.exe")
+			postbuildcommands({"{COPY} %{cfg.targetdir}/vphysics.dll "..testserver.."/bin",
+							   "{COPY} %{cfg.targetdir}/vphysics.pdb "..testserver.."/bin"})
+			debugcommand("$(SolutionDir)/testserver/srcds.exe")
 
 		filter({"platforms:x86_64","system:windows"})
-			postbuildcommands({"{COPY} %{cfg.targetdir}/vphysics.dll "..testserver.."/bin/win64"})
-			debugcommand(testserver.."/srcds_win64.exe")
+			postbuildcommands({"{COPY} %{cfg.targetdir}/vphysics.dll "..testserver.."/bin/win64",
+							   "{COPY} %{cfg.targetdir}/vphysics.pdb "..testserver.."/bin/win64"})
+			debugcommand("$(SolutionDir)/testserver/srcds_win64.exe")
 
 		filter({"platforms:x86","system:linux"})
 			postbuildcommands({"{COPY} %{cfg.targetdir}/vphysics.so "..testserver.."/bin/linux32"})
@@ -112,7 +105,3 @@ project("vphysics")
 	IncludeIVPPhysics()
 	IncludeIVP_hk_math()
 	IncludeIVP_hk_base()
---
-	--filter({"system:windows","platforms:x86"})
-
-	--	debugcommand('cp -f --reply=yes D:/UserFiles/repos/gmod_better_vphysics/projects/windows/vs2019/x86/Debug/vphysics.dll C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/bin && C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/bin/gmod.exe')

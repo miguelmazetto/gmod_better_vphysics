@@ -440,7 +440,7 @@ IVP_Car_System_Real_Wheels::IVP_Car_System_Real_Wheels( IVP_Environment *env, IV
 	}
 
 	anchor_down_template.set_anchor_position_os( static_object, &hp );
-	
+
 	force_template.anchors[0] = &anchor_center_template;
 	force_template.anchors[1] = &anchor_down_template;
 	
@@ -449,7 +449,45 @@ IVP_Car_System_Real_Wheels::IVP_Car_System_Real_Wheels( IVP_Environment *env, IV
 	force_template.push_first_object = IVP_TRUE;
 	force_template.push_second_object = IVP_FALSE;
 	
-	this->car_act_down_force = environment->create_force( &force_template );	
+	this->car_act_down_force = environment->create_force( &force_template );
+	
+	// mmz: TODO fix this ---V
+
+	hp.set_to_zero();
+	hp.k[cs_car->x_idx] = -1.0f;
+	hp.k[cs_car->z_idx] = 2.0f;
+
+	anchor_center_template.set_anchor_position_cs(car_body, &hp);
+
+	hp.set_to_zero();
+	hp.k[cs_car->x_idx] = 1.0f;
+	hp.k[cs_car->z_idx] = 2.0f;
+
+	anchor_down_template.set_anchor_position_os(car_body, &hp);
+
+	force_template.anchors[0] = &anchor_center_template;
+	force_template.anchors[1] = &anchor_down_template;
+
+	this->car_act_powerslide_front = environment->create_force(&force_template);
+
+	hp.set_to_zero();
+	hp.k[cs_car->x_idx] = -1.0f;
+	hp.k[cs_car->z_idx] = -2.0f;
+
+	anchor_center_template.set_anchor_position_cs(car_body, &hp);
+
+	hp.set_to_zero();
+	hp.k[cs_car->x_idx] = 1.0f;
+	hp.k[cs_car->z_idx] = -2.0f;
+
+	anchor_down_template.set_anchor_position_os(car_body, &hp);
+
+	force_template.anchors[0] = &anchor_center_template;
+	force_template.anchors[1] = &anchor_down_template;
+
+	this->car_act_powerslide_back = environment->create_force(&force_template);
+
+	// mmz: TODO fix this ---^
 
 	///////////////////////////////////////////////////////////////////
 	////////             EXTRA GRAVITY               //////////////////
@@ -484,7 +522,9 @@ IVP_Car_System_Real_Wheels::IVP_Car_System_Real_Wheels( IVP_Environment *env, IV
 	force_template.push_first_object = IVP_TRUE;
 	force_template.push_second_object = IVP_FALSE;
 	
-	this->car_act_extra_gravity = environment->create_force( &force_template );	
+	this->car_act_extra_gravity = environment->create_force( &force_template );
+
+
 
 	////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////
@@ -515,55 +555,11 @@ void IVP_Car_System_Real_Wheels::get_skid_info( IVP_Wheel_Skid_Info *array_of_sk
 
 void IVP_Car_System_Real_Wheels::set_powerslide(IVP_FLOAT front_accel, IVP_FLOAT rear_accel)
 {
-	/*IVP_Car_System_Real_Wheels* v3; // esi
-	IVP_Real_Object* v4; // eax
-	IVP_Actuator_Force* v5; // ecx
-	float v6; // xmm0_4
-	//IVP_ControllerVtbl* v7; // eax
-	int v8; // eax
-	IVP_Simulation_Unit* v9; // ecx
-	IVP_Actuator_Force* v10; // ecx
-	float v11; // xmm0_4
-	//IVP_ControllerVtbl* v12; // eax
-	int v13; // eax
-	IVP_Simulation_Unit* v14; // ecx
+	auto hesse_val = this->car_body->physical_core->get_rot_inertia()->hesse_val;
+	this->car_act_powerslide_front->set_force(hesse_val * front_accel);
 
-	v3 = this;
-	v4 = this->car_body;
-	v5 = this->car_act_powerslide_back;
-	v6 = v4->physical_core->rot_inertia.hesse_val * frontAccel;
-	if (v6 != v5->force)
-	{
-		v7 = v5->vfptr;
-		v5->force = v6;
-		v8 = ((int (*)(void))v7->get_associated_controlled_cores)();
-		if (*(_WORD*)(v8 + 2))
-		{
-			v9 = *(IVP_Simulation_Unit**)(**(_DWORD**)(v8 + 4) + 332);
-			if (*(_BYTE*)v9 < 8)
-				IVP_Simulation_Unit::sim_unit_ensure_cores_movement(v9);
-			else
-				IVP_Simulation_Unit::sim_unit_revive_for_simulation(v9, *((IVP_Environment**)*v9->sim_unit_cores.elems + 3));
-		}
-	}
-	v10 = v3->car_act_powerslide_front;
-	v11 = v3->car_body->physical_core->rot_inertia.hesse_val * rearAccel;
-	if (v11 != v10->force)
-	{
-		v12 = v10->vfptr;
-		v10->force = v11;
-		v13 = ((int (*)(void))v12->get_associated_controlled_cores)();
-		if (*(_WORD*)(v13 + 2))
-		{
-			v14 = *(IVP_Simulation_Unit**)(**(_DWORD**)(v13 + 4) + 332);
-			if (*(_BYTE*)v14 < 8)
-				IVP_Simulation_Unit::sim_unit_ensure_cores_movement(v14);
-			else
-				IVP_Simulation_Unit::sim_unit_revive_for_simulation(v14, *((IVP_Environment**)*v14->sim_unit_cores.elems + 3));
-		}
-	}*/
-
-	IVP_ASSERT(0 && "Not implemented");
+	hesse_val = this->car_body->physical_core->get_rot_inertia()->hesse_val;
+	this->car_act_powerslide_back->set_force(hesse_val * rear_accel);
 }
 
 // stop wheel completely (e.g. handbrake )

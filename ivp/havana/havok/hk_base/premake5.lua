@@ -5,7 +5,7 @@ function IncludeIVP_hk_base()
 
 	local _project = project()
 
-	sysincludedirs(current_dir .. "/../")
+	includedirs(current_dir .. "/../")
 	links({"hk_base"})
 
 	if refcount == 1 then

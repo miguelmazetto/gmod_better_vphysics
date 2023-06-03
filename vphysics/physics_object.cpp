@@ -324,10 +324,8 @@ void CPhysicsObject::RecheckCollisionFilter()
 	m_callbacks &= ~CALLBACK_ENABLING_COLLISION;
 }
 
-void CPhysicsObject::RecheckContactPoints(bool bSearchForNewContacts)
+void CPhysicsObject::RecheckContactPoints()
 {
-    if( bSearchForNewContacts )
-        m_pObject->force_grow_friction_system();
 
 	IVP_Environment *pEnv = m_pObject->get_environment();
 	IVP_Collision_Filter *coll_filter = pEnv->get_collision_filter();
@@ -612,12 +610,12 @@ void CPhysicsObject::SetMass( float mass )
 	}
 }
 
-float CPhysicsObject::GetMass( void ) const
+double CPhysicsObject::GetMass( void ) const
 {
 	return m_pObject->get_core()->get_mass();
 }
 
-float CPhysicsObject::GetInvMass( void ) const
+double CPhysicsObject::GetInvMass( void ) const
 {
 	return m_pObject->get_core()->get_inv_mass();
 }
@@ -650,9 +648,6 @@ void CPhysicsObject::SetInertia( const Vector &inertia )
 	ri.k[0] = IVP_Inline_Math::fabsd(ri.k[0]);
 	ri.k[1] = IVP_Inline_Math::fabsd(ri.k[1]);
 	ri.k[2] = IVP_Inline_Math::fabsd(ri.k[2]);
-
-	if( ri.k[0] > 1e14f ) ri.k[0] = 1e14f; if( ri.k[1] > 1e14f ) ri.k[1] = 1e14f; if( ri.k[2] > 1e14f ) ri.k[2] = 1e14f;
-
 	m_pObject->get_core()->set_rotation_inertia( &ri );
 }
 
@@ -1100,7 +1095,6 @@ void GetWorldCoordFromSynapse( IVP_Synapse_Friction *pfriction, IVP_U_Point &wor
 	world.set(pfriction->get_contact_point()->get_contact_point_ws());
 }
 
-
 bool CPhysicsObject::GetContactPoint( Vector *contactPoint, IPhysicsObject **contactObject ) const
 {
 	IVP_Synapse_Friction *pfriction = m_pObject->get_first_friction_synapse();
@@ -1278,7 +1272,7 @@ float CPhysicsObject::ComputeShadowControl( const hlshadowcontrol_params_t &para
 	return ComputeShadowControllerHL( this, params, secondsToArrival, dt );
 }
 
-float CPhysicsObject::GetSphereRadius() const
+double CPhysicsObject::GetSphereRadius() const
 {
 	if ( m_collideType != COLLIDE_BALL )
 		return 0;
@@ -1296,7 +1290,7 @@ void CPhysicsObject::SetSphereRadius(float radius)
 }
 //lwss end
 
-float CPhysicsObject::CalculateLinearDrag( const Vector &unitDirection ) const
+double CPhysicsObject::CalculateLinearDrag( const Vector &unitDirection ) const
 {
 	IVP_U_Float_Point ivpDir;
 	ConvertDirectionToIVP( unitDirection, ivpDir );
@@ -1563,19 +1557,13 @@ CPhysicsObject *CreatePhysicsObject( CPhysicsEnvironment *pEnvironment, const CP
 
 	IVP_U_Matrix massCenterMatrix;
 	massCenterMatrix.init();
-	
-	// mmz: even after reading this correctly, it doesn't seem right
-	//pParams->massCenterOverride = nullptr;
-	float conv = *((float*)&pParams->massCenterOverride);
-	ivp_message("conv: %x %f\n", pParams->massCenterOverride, conv);
-	/*if (pParams->massCenterOverride && conv != 1.0f)
+	if ( pParams->massCenterOverride )
 	{
 		IVP_U_Point center;
-		// ConvertPositionToIVP( &pParams->massCenterOverride , center );
-		ConvertPositionToIVP( *pParams->massCenterOverride , center );
+		ConvertPositionToIVP( *pParams->massCenterOverride, center );
 		massCenterMatrix.shift_os( &center );
-	}*/
-	objectTemplate.mass_center_override = &massCenterMatrix;
+		objectTemplate.mass_center_override = &massCenterMatrix;
+	}
 
 	CPhysicsObject *pObject = new CPhysicsObject();
 	short collideType;
