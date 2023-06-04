@@ -328,7 +328,7 @@ L20:
 		d__3 = dir1[2];
 		dir1sq = d__1 * d__1 + d__2 * d__2 + d__3 * d__3;
 		dotp = -(dir[0] * dir1[0] + dir[1] * dir1[1] + dir[2] * dir1[
-			2]) / sqrt(dirsq * dir1sq);
+			2]) * hk_Math::fast_sqrt_inv(dirsq * dir1sq);
 		if (abs(dotp) > 1. - this->tolerance) {
 		    dotp = d_sign(1.0, dotp);
 		}
@@ -500,8 +500,8 @@ L20:
 /* Computing 2nd power */
 	d__3 = dir1[2];
 	dir1sq = d__1 * d__1 + d__2 * d__2 + d__3 * d__3;
-	dotp = -(dir[0] * dir1[0] + dir[1] * dir1[1] + dir[2] * dir1[2]) / 
-		sqrt(dirsq * dir1sq);
+	dotp = -(dir[0] * dir1[0] + dir[1] * dir1[1] + dir[2] * dir1[2])
+		* hk_Math::fast_sqrt_inv(dirsq * dir1sq);
 	if (abs(dotp) > 1. - this->tolerance) {
 	    dotp = d_sign(1.0, dotp);
 	}
@@ -934,8 +934,8 @@ L150:
 /* Computing 2nd power */
 	d__3 = dir1[2];
 	dir1sq = d__1 * d__1 + d__2 * d__2 + d__3 * d__3;
-	dotp = (dir[0] * dir1[0] + dir[1] * dir1[1] + dir[2] * dir1[2]) / 
-		sqrt(dirsq * dir1sq);
+	dotp = (dir[0] * dir1[0] + dir[1] * dir1[1] + dir[2] * dir1[2])
+		* hk_Math::fast_sqrt_inv(dirsq * dir1sq);
 	if (abs(dotp) > 1. - this->tolerance) {
 	    dotp = d_sign(1.0, dotp);
 	}

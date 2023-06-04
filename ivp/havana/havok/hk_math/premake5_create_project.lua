@@ -30,9 +30,15 @@ group("IVP")
 			"spatial_vector.cpp",
 			"transform.cpp",
 			"vecmath.cpp",
-			"vector4.cpp"
+			"vector4.cpp",
+			"**.h",
+			"**.inl"
 		})
-		vpaths({["Source files/*"] = "*.cpp"})
+		vpaths({["Source files/*"] = {"**.cpp", "**.inl"},
+				["Header files/*"] = {"**.h"}})
+
+		filter("**.inl")
+			buildcommands()
 
 		filter("system:linux")
 			defines({"_LIB", "LINUX"})

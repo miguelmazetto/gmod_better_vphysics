@@ -291,6 +291,9 @@ public:
     static inline IVP_FLOAT fast_approx_asin(IVP_FLOAT angle);   //   "
     static inline IVP_FLOAT fast_anywhere_asin(IVP_FLOAT angle); //   "
 
+    static inline IVP_FLOAT fast_acos(IVP_FLOAT angle) { return 1.57079633f - fast_asin(angle); }
+    static inline IVP_FLOAT fast_anywhere_acos(IVP_FLOAT angle) { return 1.57079633f - fast_anywhere_asin(angle); }
+
     static IVP_FLOAT isqrt_float(IVP_FLOAT quad); //   "
     static IVP_DOUBLE isqrt_double(IVP_DOUBLE quad); //   "
 
@@ -334,6 +337,10 @@ public:
     static IVP_DOUBLE ivp_expf(IVP_DOUBLE f) { return exp(f); };
     static IVP_DOUBLE atan2d(IVP_DOUBLE f1, IVP_DOUBLE f2){ return atan2(f1,f2); };
 #endif
+
+    static IVP_DOUBLE lut_asintbl[513];
+    static IVP_DOUBLE lut_asin(IVP_FLOAT r);
+    static IVP_DOUBLE lut_acos(IVP_FLOAT r);
 };
 
 

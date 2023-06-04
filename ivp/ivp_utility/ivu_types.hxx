@@ -137,8 +137,10 @@ typedef unsigned int IVP_UINT32;
 // mmz: added this
 #if defined(_WIN64) || defined(__x86_64__)
 typedef long long int IVP_SSIZET;
+typedef double IVP_NFLOAT;
 #else
 typedef int IVP_SSIZET;
+typedef float IVP_NFLOAT;
 #endif
 
 // ************************

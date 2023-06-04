@@ -87,7 +87,11 @@ typedef unsigned int 	hk_size_t;
 	typedef signed long long	hk_int64;
 	typedef unsigned long long	hk_uint64;
 #elif defined(WIN32)
-#	define HK_HAVE_FORCE_INLINE
+
+#	ifndef _HAS_CXX17
+#		define HK_HAVE_FORCE_INLINE
+#	endif
+
 #	define HK_HAVE_MSVC_INLINE_ASSEMBLY
 	typedef signed __int64		hk_int64;
 	typedef unsigned __int64	hk_uint64;

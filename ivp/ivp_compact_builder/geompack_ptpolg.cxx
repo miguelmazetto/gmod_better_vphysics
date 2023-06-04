@@ -142,9 +142,9 @@ void IVP_Geompack::ptpolg_(
 	d__1 = dir[0];
 /* Computing 2nd power */
 	d__2 = dir[1];
-	dist = sqrt(d__1 * d__1 + d__2 * d__2);
-	dir[0] /= dist;
-	dir[1] /= dist;
+	dist = hk_Math::fast_sqrt_inv(d__1 * d__1 + d__2 * d__2);
+	dir[0] *= dist;
+	dir[1] *= dist;
 	dir[2] = 0.;
 	nr[0] = -dir[1];
 	nr[1] = dir[0];
@@ -160,10 +160,10 @@ void IVP_Geompack::ptpolg_(
 	d__2 = dir[1];
 /* Computing 2nd power */
 	d__3 = dir[2];
-	dist = sqrt(d__1 * d__1 + d__2 * d__2 + d__3 * d__3);
-	dir[0] /= dist;
-	dir[1] /= dist;
-	dir[2] /= dist;
+	dist = hk_Math::fast_sqrt_inv(d__1 * d__1 + d__2 * d__2 + d__3 * d__3);
+	dir[0] *= dist;
+	dir[1] *= dist;
+	dir[2] *= dist;
 	nr[0] = nrml[2] * dir[2] - nrml[3] * dir[1];
 	nr[1] = nrml[3] * dir[0] - nrml[1] * dir[2];
 	nr[2] = nrml[1] * dir[1] - nrml[2] * dir[0];

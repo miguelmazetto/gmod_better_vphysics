@@ -319,7 +319,7 @@ IVP_DOUBLE P_Sur_2D_Line::dist_to_point(IVP_U_Point* i_point)
 	IVP_DOUBLE hesse_dist = delta_y * (start_point->k[0] - i_point->k[0]) +
 		delta_x * (i_point->k[1] - start_point->k[1]); // not normized!
 
-	return hesse_dist / IVP_Inline_Math::sqrtd(norm);
+	return hesse_dist * IVP_Inline_Math::isqrt_double(norm);
 }
 
 IVP_DOUBLE P_Sur_2D_Line::hesse_dist_to_point(IVP_U_Point* i_point)

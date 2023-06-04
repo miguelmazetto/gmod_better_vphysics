@@ -23,8 +23,7 @@ void hk_Euler_Angles::set_euler_angles( const hk_Quaternion& q, hk_EULER_ANGLES_
 			if ( hk_Math::fabs(msy) > 0.9f ){
 				HK_BREAKPOINT();
 			}
-
-			hk_real cy_inv = 1.0f / hk_Math::sqrt( 1.0f - msy );
+			hk_real cy_inv = hk_Math::fast_sqrt_inv(1.0f - msy);
 			y = - hk_Math::asin(msy);
 
 			hk_real sx = 2.0f * ( qz * qy + qx * qw ) * cy_inv;

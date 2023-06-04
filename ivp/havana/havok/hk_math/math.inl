@@ -6,10 +6,9 @@
 inline hk_double hk_Math::fabsd( hk_double r ) { return hk_double(::fabs(r)); }
 
 inline hk_real hk_Math::sqrt( hk_real r) { return hk_real(::sqrt(r)); }
-inline hk_real hk_Math::sqrt_inv( hk_real r) { return 1.0f / hk_real(::sqrt(r)); }
+inline hk_real hk_Math::sqrt_inv(hk_real r) { return fast_sqrt_inv(r); }
 
-inline hk_real hk_Math::fast_sqrt( hk_real r) { return hk_real(::sqrt(r)); }
-inline hk_real hk_Math::fast_sqrt_inv( hk_real r) { return 1.0f / hk_real(::sqrt(r)); }
+inline hk_real hk_Math::fast_sqrt( hk_real r ) { return hk_real(::sqrt(r)); }
 
 inline hk_real hk_Math::fabs( hk_real r) { return hk_real(::fabs(r)); }
 inline hk_real hk_Math::tan( hk_real r) { return hk_real(::tan(r)); }
@@ -51,10 +50,9 @@ namespace c_math
 inline hk_double hk_Math::fabsd( hk_double r ) { return hk_double(c_math::fabs(r)); }
 
 inline hk_real hk_Math::sqrt( hk_real r) { return hk_real(c_math::sqrt(r)); }
-inline hk_real hk_Math::sqrt_inv( hk_real r) { return 1.0f / hk_real(c_math::sqrt(r)); }
+inline hk_real hk_Math::sqrt_inv( hk_real r) { return fast_sqrt_inv(r); }
 
 inline hk_real hk_Math::fast_sqrt( hk_real r) { return hk_real(c_math::sqrt(r)); }
-inline hk_real hk_Math::fast_sqrt_inv( hk_real r) { return 1.0f / hk_real(c_math::sqrt(r)); }
 
 inline hk_real hk_Math::fabs( hk_real r) { return hk_real(c_math::fabs(r)); }
 inline hk_real hk_Math::tan( hk_real r) { return hk_real(c_math::tan(r)); }
@@ -159,6 +157,59 @@ inline hk_real hk_Math::fast_approx_atan2( hk_real y, hk_real x)
 	return r;
 }
 
+inline hk_real hk_Math::fast_sqrt_inv(hk_real y) {
+
+	long i;
+	hk_real x2;
+	const hk_real threehalfs = 1.5F;
+
+	x2 = y * 0.5F;
+	i = *(long*)&y;                       // evil floating point bit level hacking
+	i = 0x5f3759df - (i >> 1);               // what the fuck?
+	y = *(float*)&i;
+	y = y * (threehalfs - (x2 * y * y));   // 1st iteration
+
+	return y;
+}
+
+inline hk_double hk_Math::fast_sqrt_invd(hk_double y) {
+
+	hk_double x2 = y * 0.5;
+	long long i = *(long long*)&y;
+	// The magic number is for doubles is from https://cs.uwaterloo.ca/~m32rober/rsqrt.pdf
+	i = 0x5fe6eb50c7b537a9 - (i >> 1);
+	y = *(hk_double*)&i;
+	y = y * (1.5 - (x2 * y * y));   // 1st iteration
+	//      y  = y * ( 1.5 - ( x2 * y * y ) );   // 2nd iteration, this can be removed
+	return y;
+}
+
+//inline hk_nfloat hk_Math::fast_asin(hk_nfloat r) {
+//	if(r >= 1.0f) return 1.57079633f;
+//
+//	r = r * 512 + 512;
+//
+//	int index = (int)r;
+//	hk_nfloat decpart = r - index;
+//	hk_nfloat nextfrac = 1.f - decpart;
+//
+//	return asintbl[index] * decpart + asintbl[index+1] * nextfrac;
+//}
+//
+//inline hk_nfloat hk_Math::fast_acos(hk_nfloat r) { return 1.57079633 - asin(r); }
+
+//inline hk_nfloat hk_Math::fast_sin(hk_nfloat r) {
+//
+//	if (r >= 1.0f) return 1.57079633f;
+//
+//	r = r * 512 + 512;
+//
+//	int index = (int)r;
+//	hk_nfloat decpart = r - index;
+//	hk_nfloat nextfrac = 1.f - decpart;
+//
+//	return asintbl[index] * decpart + asintbl[index + 1] * nextfrac;
+//}
 
 #endif// HK_PS2
 

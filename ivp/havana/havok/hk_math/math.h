@@ -21,17 +21,22 @@ class hk_Math
 		static inline hk_real sqrt_inv( hk_real );
 		static inline hk_real fast_sqrt( hk_real );
 		static inline hk_real fast_sqrt_inv( hk_real );
+		static inline hk_double fast_sqrt_invd( hk_double );
 
 		static inline hk_real fabs( hk_real );
 		static inline hk_real tan( hk_real );
 		static inline hk_real sin( hk_real );
 		static inline hk_real cos( hk_real );
+		//static inline hk_nfloat fast_sin(hk_nfloat);
+		//static inline hk_nfloat fast_cos(hk_nfloat);
 		static inline hk_real atan2( hk_real sinus, hk_real cosinus);
 		static inline hk_real fast_approx_atan2( hk_real sinus, hk_real cosinus); // 0.01 error
 		static inline hk_real fast_approx_atan2_normized( hk_real sinus, hk_real cosinus); // 0.01 error // input has to be normized
 		
 		static inline hk_real asin( hk_real );
 		static inline hk_real acos( hk_real );
+		//static inline hk_nfloat fast_asin( hk_nfloat );
+		//static inline hk_nfloat fast_acos( hk_nfloat );
 		static inline hk_real max( hk_real, hk_real );
 		static inline hk_real min( hk_real, hk_real );
 
@@ -46,6 +51,8 @@ class hk_Math
 		static	      hk_real rand01();
 		static inline int int_log2( hk_real ); // integer part of log2
 		static unsigned int hk_random_seed;
+
+		//static hk_real asintbl[1025];
 };
 
 #include <hk_math/math.inl>

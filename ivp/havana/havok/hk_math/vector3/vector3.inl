@@ -177,8 +177,28 @@ void hk_Vector3::set_mul(hk_real r, const hk_Vector3& a)
 	z = r*a.z;
 }
 
+//#include <Eigen/Core>
+
 void hk_Vector3::add_mul(hk_real r, const hk_Vector3& a)
 {
+	//auto& ei_t = *(Eigen::Vector3<hk_real>*)this;
+	//auto& ei_a = *(Eigen::Vector3<hk_real>*) & a;
+	//
+	//ei_t += r * ei_a;
+	
+	//VectorClass::Vec4f vec_this(x, y, z, 0);
+	//VectorClass::Vec4f vec_a(a.x, a.y, a.z, 0);
+	//
+	//vec_this += vec_a * r;
+	//
+	//x = vec_this[0];
+	//y = vec_this[1];
+	//z = vec_this[2];
+	
+	//auto res = (ei_t + ei_a.cwiseProduct(Eigen::Vector3<hk_real>({ r, r, r }))).evalTo();
+	//
+	//memmove(this, *(hk_real**)&res, 3 * sizeof(hk_real));
+	
 	x += r*a.x;
 	y += r*a.y;
 	z += r*a.z;

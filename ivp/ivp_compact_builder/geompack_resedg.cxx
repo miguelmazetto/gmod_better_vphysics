@@ -265,10 +265,10 @@ recheck_size_2:
     d__2 = e[1];
 /* Computing 2nd power */
     d__3 = e[2];
-    leng = sqrt(d__1 * d__1 + d__2 * d__2 + d__3 * d__3);
-    e[0] /= leng;
-    e[1] /= leng;
-    e[2] /= leng;
+    leng = hk_Math::fast_sqrt_inv(d__1 * d__1 + d__2 * d__2 + d__3 * d__3);
+    e[0] *= leng;
+    e[1] *= leng;
+    e[2] *= leng;
     enl[0] = normals[fl * 3 + 2] * e[2] - normals[fl * 3 + 3] * e[1];
     enl[1] = normals[fl * 3 + 3] * e[0] - normals[fl * 3 + 1] * e[2];
     enl[2] = normals[fl * 3 + 1] * e[1] - normals[fl * 3 + 2] * e[0];

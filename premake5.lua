@@ -1,4 +1,3 @@
-
 if _ACTION == 'clean' then
 	os.rmdir('projects')
 	os.rmdir('ivp/projects')
@@ -46,10 +45,37 @@ function IncludePackage(name)
 	return refcount
 end
 
+-- Compile blaze include files
+--if not os.isdir(_MAIN_SCRIPT_DIR .. "/blaze/include") then
+--	local blazedir = _MAIN_SCRIPT_DIR.."/blaze"
+--	local fblazedir = '"'..blazedir..'"'
+--	local builddir = '"'..blazedir..'/build"'
+--
+--	os.execute('cmake -B '..builddir..' -S '..fblazedir..' -DUSE_LAPACK=OFF')
+--	os.execute("cmake --install "..builddir.." --prefix "..fblazedir)
+--end
+
+if not os.isdir(_MAIN_SCRIPT_DIR .. "/eigen/include") then
+	local eigendir = _MAIN_SCRIPT_DIR.."/eigen"
+	local feigendir = '"'..eigendir..'"'
+	local builddir = '"'..eigendir..'/build"'
+	os.execute('cmake -B '..builddir..' -S '..eigendir..' -DCMAKE_INSTALL_PREFIX:PATH='..feigendir)
+	os.execute("cmake --build "..builddir.." --target install")
+end
+
 workspace("gmod_better_vphysics")
 	language("C++")
 	warnings("Extra")
-	flags({"MultiProcessorCompile", "ShadowedVariables", "UndefinedIdentifiers"})
+
+	flags({
+		"MultiProcessorCompile", 
+		"ShadowedVariables",
+		"UndefinedIdentifiers",
+		"EnableSSE2",
+		"FloatFast",
+		"LinkTimeOptimization"
+	})
+
 	characterset("MBCS")
 	intrinsics("On")
 	inlining("Auto")
@@ -62,7 +88,7 @@ workspace("gmod_better_vphysics")
 	targetdir("%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}")
 	debugdir("%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}")
 	objdir("!%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}/intermediate/%{prj.name}")
-	includedirs({ "sourcesdk-minimal/public" })
+	includedirs({ "sourcesdk-minimal/public", "eigen/include/eigen3", "libs" })
 
 	platforms({"x86_64", "x86"})
 	defines({"VPROF_TELEMETRY_H"})
@@ -84,14 +110,14 @@ workspace("gmod_better_vphysics")
 		defines({"COMPILER_MSVC64","WIN64"})
 
 	filter("configurations:ReleaseWithSymbols")
-		optimize("Debug")
-		symbols("On")
+		optimize("Speed")
+		symbols("Full")
 		defines("NDEBUG")
 		runtime("Release")
 
 	filter("configurations:Release")
 		flags("LinkTimeOptimization")
-		optimize("Full")
+		optimize("Speed")
 		symbols("Off")
 		defines("NDEBUG")
 		runtime("Release")
@@ -104,7 +130,7 @@ workspace("gmod_better_vphysics")
 
 	filter("system:windows")
 		cdialect("C11")
-		cppdialect("C++14")
+		cppdialect("C++17")
 		staticruntime("On")
 		defaultplatform("x86")
 		defines({

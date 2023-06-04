@@ -2,3 +2,6 @@
 	path = sourcesdk-minimal
 	url = https://github.com/miguelmazetto/sourcesdk-minimal-vphysics
 	branch = x86-64-branch
+[submodule "libs/vectorclass"]
+	path = libs/vectorclass
+	url = https://github.com/vectorclass/version2

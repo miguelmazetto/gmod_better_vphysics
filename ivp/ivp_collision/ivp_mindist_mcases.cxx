@@ -430,7 +430,7 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_Leave_KK(const IVP_Compact_
 
 	side = (*( unsigned int *)&val)>>31;
 
-	IVP_DOUBLE iHQ = IVP_Fast_Math::isqrt(HH,3);
+	IVP_DOUBLE iHQ = IVP_Inline_Math::isqrt_double(HH);
 
 	
 	H_Los.set(&kkin.cross_KL_Los);
@@ -749,7 +749,7 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_PP(const IVP_Compact_Edge *
     {
 	IVP_DOUBLE qlen = points_ws[0].quad_distance_to(&points_ws[1]);
 	if (qlen > P_DOUBLE_RES){
-		IVP_DOUBLE inv_len = IVP_Fast_Math::isqrt(qlen,3);
+		IVP_DOUBLE inv_len = IVP_Inline_Math::isqrt_double(qlen);
 		mindist->len_numerator = qlen * inv_len - mindist->sum_extra_radius;
 		mindist->contact_plane.inline_subtract_and_mult( &points_ws[0], &points_ws[1], inv_len);
 	}else{

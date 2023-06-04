@@ -99,24 +99,69 @@ void IVP_U_Quat::set_matrix(IVP_DOUBLE m[4][4]) const {
 void IVP_U_Quat::set_matrix(IVP_U_Matrix3 *mat)const  {
 #if !defined(IVP_USE_PS2_VU0_)
   const IVP_U_Quat *quat=this;
+
+  const auto& vquat = *(VectorClass::Vec4d*)quat;
+
   IVP_DOUBLE wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
 
-  x2 = quat->x + quat->x; y2 = quat->y + quat->y; z2 = quat->z + quat->z;
-  xx = quat->x * x2;   xy = quat->x * y2;   xz = quat->x * z2;
-  yy = quat->y * y2;   yz = quat->y * z2;   zz = quat->z * z2;
-  wx = quat->w * x2;   wy = quat->w * y2;   wz = quat->w * z2;
+  auto x2y2z2 = vquat * 2;
+  auto x = x2y2z2 * quat->x;
+  auto w = x2y2z2 * quat->w;
+  auto y = VectorClass::Vec4d(quat->y, quat->y, quat->z, 0) *
+		   VectorClass::Vec4d(x2y2z2[1], x2y2z2[2], x2y2z2[2], 0);
 
-  mat->set_elem(0,0, 1.0f - (yy + zz));
-  mat->set_elem(0,1, xy - wz);
-  mat->set_elem(0,2, xz + wy);
- 
-  mat->set_elem(1,0, xy + wz);
-  mat->set_elem(1,1, 1.0f - (xx + zz));
-  mat->set_elem(1,2, yz - wx);
+  yy = y[0]; yz = y[1]; zz = y[2];
+  xx = x[0], xy = x[1], xz = x[2];
+  wx = w[0], wy = w[1], wz = w[2];
+  auto nw = -w;
 
-  mat->set_elem(2,0, xz - wy);
-  mat->set_elem(2,1, yz + wx);
-  mat->set_elem(2,2, 1.0f - (xx + yy));
+  auto z = VectorClass::Vec4d(yy, xx, xx, 0) +
+		   VectorClass::Vec4d(zz, zz, yy, 0);
+
+  auto vmat = VectorClass::Vec8d(1.0, xy, xz, xy, 1.0f, yz, xz, yz);
+  vmat -= VectorClass::Vec8d(z[0], wz, nw[1], nw[2], z[1], wx, wy, nw[0]);
+
+  //*(VectorClass::Vec8d*)mat
+  //double* list = (double*)&vmat;
+  double* amat = (double*)mat;
+  //
+  //ivp_message("VecList: %.4f %.4f %.4f %.4f %.4f %.4f %.4f %.4f\n", list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7]);
+  //ivp_message("VecMatr: %.4f %.4f %.4f %.4f %.4f %.4f %.4f %.4f\n", vmat[0], vmat[1], vmat[2], vmat[3], vmat[4], vmat[5], vmat[6], vmat[7]);
+  
+  //memmove(mat, &vmat, 8 * sizeof(IVP_DOUBLE));
+  //amat[8] = 1.0f - z[2];
+
+  //ivp_message("Wrote: %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf\n", amat[0], amat[1], amat[2], amat[3], amat[4], amat[5], amat[6], amat[7], amat[8]);
+  auto matrows = (IVP_U_Point*)mat;
+  //auto vmatrows = (IVP_U_Point*)&vmat;
+  
+  //matrows[0] = vmatrows[0];
+  //matrows[1] = vmatrows[1];
+  matrows[2] = *(IVP_U_Point*)((IVP_DOUBLE*)&vmat + 6);
+  amat[10] = 1.0 - z[2];
+  amat[11] = 0;
+  matrows[1] = *(IVP_U_Point*)((IVP_DOUBLE*)&vmat + 3);
+  amat[7] = 0;
+  matrows[0] = *(IVP_U_Point*)((IVP_DOUBLE*)&vmat + 0);
+  amat[3] = 0;
+
+  // mmz: There are solutions better than this, however all my attempts crashed
+  // matrows[0] = IVP_U_Point(vmat[0], vmat[1], vmat[2]);
+  // matrows[1] = IVP_U_Point(vmat[3], vmat[4], vmat[5]);
+  // matrows[2] = IVP_U_Point(vmat[6], vmat[7], 1.0f - z[2]);
+
+  //mat->set_elem(0, 0, vmat[0]);
+  //mat->set_elem(0, 1, vmat[1]);
+  //mat->set_elem(0, 2, vmat[2]);
+  //
+  //mat->set_elem(1, 0, vmat[3]);
+  //mat->set_elem(1, 1, vmat[4]);
+  //mat->set_elem(1, 2, vmat[5]);
+  //
+  //mat->set_elem(2, 0, vmat[6]);
+  //mat->set_elem(2, 1, vmat[7]);
+  //mat->set_elem(2,2, 1.0f - z[2]);
+
 #else
    	asm __volatile__
 	("
@@ -296,11 +341,10 @@ void IVP_U_Quat::set_interpolate_smoothly(const IVP_U_Quat * from,const IVP_U_Qu
         if ( cosom < 1.0f - 0.001f /*IVP_QUAT_DELTA*/ ){ // 0.033 * 180/PI  degrees 
 	  IVP_DOUBLE          scale0, scale1;
 	  // standard case (slerp)
-	  IVP_DOUBLE omega = IVP_Inline_Math::acosd(cosom);
-	  IVP_DOUBLE i_sinom = 1.0f / IVP_Inline_Math::sqrtd(1.0f - cosom * cosom);
-	  //IVP_DOUBLE i_sinom = 1.0f / IVP_Inline_Math::sind(omega);
-	  scale0 = IVP_Inline_Math::sind((1.0f - t) * omega) * i_sinom;
-	  scale1 = IVP_Inline_Math::sind(t * omega) * i_sinom * sign;
+
+	  scale0 = (1.0f - t) * cosom;
+	  scale1 = t * cosom * sign;
+
 	  // calculate final values
 	  res->x = scale0 * from->x + scale1 * to->x;
 	  res->y = scale0 * from->y + scale1 * to->y;
@@ -387,7 +431,7 @@ void IVP_U_Quat::normize_quat() {
 		+ quat->w * quat->w;
 	
 	if (square > P_DOUBLE_EPS){
-	  dist = (IVP_DOUBLE)(1.0f / IVP_Inline_Math::sqrtd(square));
+	  dist = (IVP_DOUBLE)IVP_Inline_Math::isqrt_double(square); //(IVP_DOUBLE)(1.0f / IVP_Inline_Math::sqrtd(square));
 	  quat->x *= dist;
 	  quat->y *= dist;
 	  quat->z *= dist;
@@ -398,22 +442,22 @@ void IVP_U_Quat::normize_quat() {
 
 
 void IVP_U_Quat::fast_normize_quat() {
-    IVP_DOUBLE	square;
-    IVP_U_Quat *quat=this;
-    square = quat->x * quat->x + quat->y * quat->y + quat->z * quat->z + quat->w * quat->w;
-    if ( IVP_Inline_Math::fabsd ( 1.0f - (square) ) > P_DOUBLE_RES ){
-	IVP_DOUBLE factor = 1.5f - 0.5f * square;
-	goto loop;
-	while ( IVP_Inline_Math::fabsd ( 1.0f - (factor * factor * square) ) > P_DOUBLE_RES ){
-	loop:
-	    factor += 0.5f * (1.0f - ( factor * factor * square ));
-	}
-	quat->x *= factor;
-	quat->y *= factor;
-	quat->z *= factor;
-	quat->w *= factor;
-    }
-
+    //IVP_DOUBLE	square;
+    //IVP_U_Quat *quat=this;
+    //square = quat->x * quat->x + quat->y * quat->y + quat->z * quat->z + quat->w * quat->w;
+    //if ( IVP_Inline_Math::fabsd ( 1.0f - (square) ) > P_DOUBLE_RES ){
+	//IVP_DOUBLE factor = 1.5f - 0.5f * square;
+	//goto loop;
+	//while ( IVP_Inline_Math::fabsd ( 1.0f - (factor * factor * square) ) > P_DOUBLE_RES ){
+	//loop:
+	//    factor += 0.5f * (1.0f - ( factor * factor * square ));
+	//}
+	//quat->x *= factor;
+	//quat->y *= factor;
+	//quat->z *= factor;
+	//quat->w *= factor;
+    //}
+	normize_quat();
 }
 
 

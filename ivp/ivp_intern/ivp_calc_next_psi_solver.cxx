@@ -157,7 +157,7 @@ no_sim_speedup:
 /* needs speed rot_speed  next_psi_time */
 void IVP_Calc_Next_PSI_Solver::calc_next_PSI_matrix(IVP_Event_Sim *event_sim,IVP_U_Vector<IVP_Hull_Manager_Base> *active_hull_managers_out){
    
-   IVP_IF(1) {
+   IVP_IF(0) {
         IVP_Debug_Manager *dm=event_sim->environment->get_debug_manager();
 	if(dm->file_out_impacts) {
 	    fprintf(dm->out_deb_file,"making_calc_next_psi %zx at %f\n",0x0000ffff&(size_t)this,core->environment->get_current_time().get_time());
@@ -215,7 +215,7 @@ void IVP_Calc_Next_PSI_Solver::calc_psi_rotation_axis(const IVP_U_Quat *q_core_f
 	q_core_f_core->y * q_core_f_core->y +
 	q_core_f_core->z * q_core_f_core->z;
     if ( qlen > P_DOUBLE_EPS ){
-	IVP_DOUBLE ilen = IVP_Fast_Math::isqrt(qlen,3);
+	IVP_DOUBLE ilen = IVP_Inline_Math::isqrt_double(qlen);
 	IVP_FLOAT abs_angle;			// absolute rotation angle interpolated movement
 	abs_angle  = IVP_Inline_Math::upper_limit_asin( qlen * ilen );
 	IVP_IF(1){

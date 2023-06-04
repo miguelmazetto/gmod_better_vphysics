@@ -2,6 +2,9 @@
 
 //IVP_EXPORT_PUBLIC
 
+#define VCL_NAMESPACE VectorClass
+#include <vectorclass/vectorclass.h>
+
 
 inline void IVP_U_Float_Point::set(const IVP_U_Point *p_source){
     IVP_DOUBLE a = p_source->k[0];
@@ -367,29 +370,50 @@ inline void IVP_U_Matrix3::inline_vimult3( const IVP_U_Point *p_in, IVP_U_Point 
 
 inline void IVP_U_Matrix::inline_vmult4(const IVP_U_Point *p_in, IVP_U_Point * p_out)const{
     
-    IVP_DOUBLE h = p_in->k[0];
-    IVP_DOUBLE a = h * get_elem(0,0);
-    IVP_DOUBLE b = h * get_elem(1,0);
-    IVP_DOUBLE c = h * get_elem(2,0);
-    IVP_DOUBLE x,y;
-    h = p_in->k[1]; x = h*get_elem(0,1);	y = h*get_elem(1,1);	a += x;	x = h*get_elem(2,1);	 b+=y, c+= x;
-    h = p_in->k[2]; x = h*get_elem(0,2);	y = h*get_elem(1,2);	a += x;	x = h*get_elem(2,2);	 b+=y, c+= x;
-    a += vv.k[0];    b += vv.k[1];    c += vv.k[2];
-    p_out->k[0] = a;p_out->k[1] = b; p_out->k[2] = c;
-}
+    VectorClass::Vec4d abc(get_elem(0, 0), get_elem(1, 0), get_elem(2, 0), 0);
+    abc *= p_in->k[0];
 
+    abc += VectorClass::Vec4d(get_elem(0, 1), get_elem(1, 1), get_elem(2, 1), 0) * p_in->k[1];
+    abc += VectorClass::Vec4d(get_elem(0, 2), get_elem(1, 2), get_elem(2, 2), 0) * p_in->k[2];
+    abc += VectorClass::Vec4d(vv.k[0], vv.k[1], vv.k[2], 0);
+
+    p_out->k[0] = abc[0];
+    p_out->k[1] = abc[1];
+    p_out->k[2] = abc[2];
+
+    //IVP_DOUBLE h = p_in->k[0];
+    //IVP_DOUBLE a = h * get_elem(0,0);
+    //IVP_DOUBLE b = h * get_elem(1,0);
+    //IVP_DOUBLE c = h * get_elem(2,0);
+    //IVP_DOUBLE x,y;
+    //h = p_in->k[1]; x = h*get_elem(0,1);	y = h*get_elem(1,1);	a += x;	x = h*get_elem(2,1);	 b+=y, c+= x;
+    //h = p_in->k[2]; x = h*get_elem(0,2);	y = h*get_elem(1,2);	a += x;	x = h*get_elem(2,2);	 b+=y, c+= x;
+    //a += vv.k[0];    b += vv.k[1];    c += vv.k[2];
+    //p_out->k[0] = a;p_out->k[1] = b; p_out->k[2] = c;
+}
 
 inline void IVP_U_Matrix::inline_vmult4(const IVP_U_Float_Point *p_in, IVP_U_Point * p_out)const{
     
-    IVP_DOUBLE h = p_in->k[0];
-    IVP_DOUBLE a = h * get_elem(0,0);
-    IVP_DOUBLE b = h * get_elem(1,0);
-    IVP_DOUBLE c = h * get_elem(2,0);
-    IVP_DOUBLE x,y;
-    h = p_in->k[1]; x = h*get_elem(0,1);	y = h*get_elem(1,1);	a += x;	x = h*get_elem(2,1);	 b+=y, c+= x;
-    h = p_in->k[2]; x = h*get_elem(0,2);	y = h*get_elem(1,2);	a += x;	x = h*get_elem(2,2);	 b+=y, c+= x;
-    a += vv.k[0];    b += vv.k[1];    c += vv.k[2];
-    p_out->k[0] = a;p_out->k[1] = b; p_out->k[2] = c;
+    VectorClass::Vec4d abc (get_elem(0, 0), get_elem(1, 0), get_elem(2, 0), 0);
+    abc *= p_in->k[0];
+
+    abc += VectorClass::Vec4d(get_elem(0, 1), get_elem(1, 1), get_elem(2, 1), 0) * p_in->k[1];
+    abc += VectorClass::Vec4d(get_elem(0, 2), get_elem(1, 2), get_elem(2, 2), 0) * p_in->k[2];
+    abc += VectorClass::Vec4d(vv.k[0], vv.k[1], vv.k[2], 0);
+
+    p_out->k[0] = abc[0];
+    p_out->k[1] = abc[1];
+    p_out->k[2] = abc[2];
+
+    //IVP_DOUBLE h = p_in->k[0];
+    //IVP_DOUBLE a = h * get_elem(0,0);
+    //IVP_DOUBLE b = h * get_elem(1,0);
+    //IVP_DOUBLE c = h * get_elem(2,0);
+    //IVP_DOUBLE x,y;
+    //h = p_in->k[1]; x = h*get_elem(0,1);	y = h*get_elem(1,1);	a += x;	x = h*get_elem(2,1);	 b+=y, c+= x;
+    //h = p_in->k[2]; x = h*get_elem(0,2);	y = h*get_elem(1,2);	a += x;	x = h*get_elem(2,2);	 b+=y, c+= x;
+    //a += vv.k[0];    b += vv.k[1];    c += vv.k[2];
+    //p_out->k[0] = a;p_out->k[1] = b; p_out->k[2] = c;
 }
 
 void IVP_U_Point::inline_calc_cross_product(const IVP_U_Point *v1,const IVP_U_Point *v2)

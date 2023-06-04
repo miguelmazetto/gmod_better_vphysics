@@ -605,7 +605,7 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::minimize_BB(IVP_Mindist_Minimize_Solve
     IVP_DOUBLE qlen = mms->mindist->contact_plane.quad_length();
     IVP_DOUBLE inv_len;
 	if( IVP_Inline_Math::fabsd(qlen)>P_DOUBLE_EPS ) { // used to be fabs, which was a sml call
-        inv_len = IVP_Fast_Math::isqrt(qlen,3);
+        inv_len = IVP_Inline_Math::isqrt_double(qlen);
 	} else {
 		inv_len=1.0f;
 	}

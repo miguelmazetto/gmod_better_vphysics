@@ -50,13 +50,20 @@ void hk_Rigid_Body_Core::apply_impulses( hk_Core_VMQ_Input &input,
 		const hk_real impulse_strength[])
 {
 	if ( physical_unmoveable || pinned || isnan(impulse_strength[0]) ) return;
-	int i = input.m_n_queries-1;
+
+	//int i = input.m_n_queries-1;
+
 	hk_Impulse_Info *mq = input.m_vmq;
+	hk_Impulse_Info *mqmax = &mq[input.m_n_queries];
+
 	hk_Single_Rigid_Body_CFAD *ds = (hk_Single_Rigid_Body_CFAD *)input.m_buffer;
 	do {
-		_get_spin().add_mul(   impulse_strength[mq->m_matrix_index], ds->m_delta_spin );
-		_get_linear_velocity().add_mul( impulse_strength[mq->m_matrix_index] * this->get_inv_mass(), mq->m_linear );
+		auto& strength = impulse_strength[mq->m_matrix_index];
+
+		_get_spin().add_mul(strength, ds->m_delta_spin );
+		_get_linear_velocity().add_mul(strength * this->get_inv_mass(), mq->m_linear );
+
 		mq ++;
 		ds ++;
-	} while ( --i >= 0);
+	} while ( mq < mqmax );
 }
