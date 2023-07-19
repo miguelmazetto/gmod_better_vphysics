@@ -73,7 +73,7 @@ workspace("gmod_better_vphysics")
 		"UndefinedIdentifiers",
 		"EnableSSE2",
 		"FloatFast",
-		"LinkTimeOptimization"
+		--"LinkTimeOptimization"
 	})
 
 	characterset("MBCS")

@@ -370,40 +370,135 @@ inline void IVP_U_Matrix3::inline_vimult3( const IVP_U_Point *p_in, IVP_U_Point 
 
 inline void IVP_U_Matrix::inline_vmult4(const IVP_U_Point *p_in, IVP_U_Point * p_out)const{
     
-    VectorClass::Vec4d abc(get_elem(0, 0), get_elem(1, 0), get_elem(2, 0), 0);
-    abc *= p_in->k[0];
+    //auto _rows = (VectorClass::Vec4d*)rows;
+    //auto& vin = *(VectorClass::Vec4d*)p_in->k;
+    //auto& vout = *(VectorClass::Vec4d*)p_out->k;
+    //auto& vvv = *(VectorClass::Vec4d*)vv.k;
+    //
+    //vout = (_rows[0] * vin[0]) + (_rows[1] * vin[1]) + (_rows[2] * vin[2]);
+    //vout += vvv;
 
-    abc += VectorClass::Vec4d(get_elem(0, 1), get_elem(1, 1), get_elem(2, 1), 0) * p_in->k[1];
-    abc += VectorClass::Vec4d(get_elem(0, 2), get_elem(1, 2), get_elem(2, 2), 0) * p_in->k[2];
-    abc += VectorClass::Vec4d(vv.k[0], vv.k[1], vv.k[2], 0);
+    //VectorClass::Vec4d abc(get_elem(0, 0), get_elem(1, 0), get_elem(2, 0), 0);
+    //abc *= p_in->k[0];
+    //
+    //abc += VectorClass::Vec4d(get_elem(0, 1), get_elem(1, 1), get_elem(2, 1), 0) * p_in->k[1];
+    //abc += VectorClass::Vec4d(get_elem(0, 2), get_elem(1, 2), get_elem(2, 2), 0) * p_in->k[2];
+    //abc += VectorClass::Vec4d(vv.k[0], vv.k[1], vv.k[2], 0);
+    //
+    //p_out->k[0] = abc[0];
+    //p_out->k[1] = abc[1];
+    //p_out->k[2] = abc[2];
 
-    p_out->k[0] = abc[0];
-    p_out->k[1] = abc[1];
-    p_out->k[2] = abc[2];
-
-    //IVP_DOUBLE h = p_in->k[0];
-    //IVP_DOUBLE a = h * get_elem(0,0);
-    //IVP_DOUBLE b = h * get_elem(1,0);
-    //IVP_DOUBLE c = h * get_elem(2,0);
-    //IVP_DOUBLE x,y;
-    //h = p_in->k[1]; x = h*get_elem(0,1);	y = h*get_elem(1,1);	a += x;	x = h*get_elem(2,1);	 b+=y, c+= x;
-    //h = p_in->k[2]; x = h*get_elem(0,2);	y = h*get_elem(1,2);	a += x;	x = h*get_elem(2,2);	 b+=y, c+= x;
-    //a += vv.k[0];    b += vv.k[1];    c += vv.k[2];
-    //p_out->k[0] = a;p_out->k[1] = b; p_out->k[2] = c;
+    IVP_DOUBLE h = p_in->k[0];
+    IVP_DOUBLE a = h * get_elem(0,0);
+    IVP_DOUBLE b = h * get_elem(1,0);
+    IVP_DOUBLE c = h * get_elem(2,0);
+    IVP_DOUBLE x,y;
+    h = p_in->k[1]; x = h*get_elem(0,1);	y = h*get_elem(1,1);	a += x;	x = h*get_elem(2,1);	 b+=y, c+= x;
+    h = p_in->k[2]; x = h*get_elem(0,2);	y = h*get_elem(1,2);	a += x;	x = h*get_elem(2,2);	 b+=y, c+= x;
+    a += vv.k[0];    b += vv.k[1];    c += vv.k[2];
+    p_out->k[0] = a;p_out->k[1] = b; p_out->k[2] = c;
 }
 
+#include <stdio.h>
 inline void IVP_U_Matrix::inline_vmult4(const IVP_U_Float_Point *p_in, IVP_U_Point * p_out)const{
     
-    VectorClass::Vec4d abc (get_elem(0, 0), get_elem(1, 0), get_elem(2, 0), 0);
-    abc *= p_in->k[0];
+    //VectorClass::Vec4d abc (get_elem(0, 0), get_elem(1, 0), get_elem(2, 0), 0);
+    //abc *= p_in->k[0];
+    //
+    //abc += VectorClass::Vec4d(get_elem(0, 1), get_elem(1, 1), get_elem(2, 1), 0) * p_in->k[1];
+    //abc += VectorClass::Vec4d(get_elem(0, 2), get_elem(1, 2), get_elem(2, 2), 0) * p_in->k[2];
+    //abc += VectorClass::Vec4d(vv.k[0], vv.k[1], vv.k[2], 0);
+    //
+    //p_out->k[0] = abc[0];
+    //p_out->k[1] = abc[1];
+    //p_out->k[2] = abc[2];
 
-    abc += VectorClass::Vec4d(get_elem(0, 1), get_elem(1, 1), get_elem(2, 1), 0) * p_in->k[1];
-    abc += VectorClass::Vec4d(get_elem(0, 2), get_elem(1, 2), get_elem(2, 2), 0) * p_in->k[2];
-    abc += VectorClass::Vec4d(vv.k[0], vv.k[1], vv.k[2], 0);
+    //auto vrows =  (VectorClass::Vec4d*)rows;
 
-    p_out->k[0] = abc[0];
-    p_out->k[1] = abc[1];
-    p_out->k[2] = abc[2];
+// most optimized but incorrect
+    //auto row0 = *(VectorClass::Vec4d*)&rows[0];
+    //auto row1 = *(VectorClass::Vec4d*)&rows[1];
+    //auto row2 = *(VectorClass::Vec4d*)&rows[2];
+    //
+    //auto vout =   (VectorClass::Vec4d*)p_out;
+    //auto vin =    *(VectorClass::Vec4f*)p_in;
+    //auto vvv =    *(VectorClass::Vec4d*)&vv;
+    //auto vind = VectorClass::to_double(vin);
+    //
+    //*vout = vvv +
+    //    row0 * vind +
+    //    row1 * vind +
+    //    row2 * vind;
+    //vout->insert(3, 0);
+
+    /*
+    auto first2 = *(VectorClass::Vec8d*)rows;
+    //auto first2 = VectorClass::Vec8d(vrows[0], vrows[1]);
+
+    auto vind = VectorClass::to_double(vin);
+
+    auto mult = VectorClass::Vec8d(vind, vind) * first2;
+    auto last = VectorClass::Vec4d(get_elem(2, 0), get_elem(2, 1), get_elem(2, 2), 0) * vind;
+
+    *vout = mult.get_low() + mult.get_high() + last + vvv;
+    vout->insert(3, 0);
+    */
+
+    //auto multdiv = (VectorClass::Vec4d*)&mult;
+    //
+    //mult *= *first2;
+    
+    //multdiv[0] += multdiv[1] + vrows[2] * vind + vvv;
+    //vout = multdiv[0];
+    //vout.insert(3, 0);
+
+    //char buf[40];
+    //sprintf(buf, "vrow0 = %p\n", vrows);
+
+    //multdiv[0] += multdiv[1];
+
+    //sprintf(buf, "vrow2 = %.3f\n", vrows[2]);
+
+    //multdiv[0] += vrows[2] * vind;
+    //multdiv[0] += *vvv;
+    //*vout = multdiv[0];
+    //vout->insert(3, 0);
+
+    //auto vrows = (VectorClass::Vec4d*)rows;
+    //auto& vout = *(VectorClass::Vec4d*)p_out->k;
+    //auto& vin = *(VectorClass::Vec4f*)p_in->k;
+    //auto& vvv = *(VectorClass::Vec4d*)vv.k;
+    //
+    //vout = vrows[0] * vin[0] + vrows[1] * vin[1] + vrows[2] * vin[2] + vvv;
+    //vout.insert(3, 0);
+
+// Correct:
+    //VectorClass::Vec4d abc(get_elem(0, 0), get_elem(1, 0), get_elem(2, 0), 0);
+    //abc *= p_in->k[0];
+    //abc += VectorClass::Vec4d(get_elem(0, 1), get_elem(1, 1), get_elem(2, 1), 0) * p_in->k[1];
+    //abc += VectorClass::Vec4d(get_elem(0, 2), get_elem(1, 2), get_elem(2, 2), 0) * p_in->k[2];
+    //abc += VectorClass::Vec4d(vv.k[0], vv.k[1], vv.k[2], 0);
+    //printf("here!");
+
+    //auto vout =   (VectorClass::Vec4d*)p_out;
+    //auto vin =    *(VectorClass::Vec4f*)p_in;
+    //auto vvv =    *(VectorClass::Vec4d*)&vv;
+    ////auto vind = VectorClass::to_double(vin);
+    //auto& abc = *(VectorClass::Vec4d*)p_out->k;
+    //abc = VectorClass::Vec4d(get_elem(0, 0), get_elem(1, 0), get_elem(2, 0), 0);
+    //abc *= p_in->k[0];
+    //abc += VectorClass::Vec4d(get_elem(0, 1), get_elem(1, 1), get_elem(2, 1), 0) * p_in->k[1];
+    //abc += VectorClass::Vec4d(get_elem(0, 2), get_elem(1, 2), get_elem(2, 2), 0) * p_in->k[2];
+    //abc += vvv;
+    //abc.insert(3, 0);
+    //*vout = abc;
+
+    //printf("here!");
+
+    //p_out->k[0] = abc[0];
+    //p_out->k[1] = abc[1];
+    //p_out->k[2] = abc[2];
 
     //IVP_DOUBLE h = p_in->k[0];
     //IVP_DOUBLE a = h * get_elem(0,0);
@@ -413,7 +508,18 @@ inline void IVP_U_Matrix::inline_vmult4(const IVP_U_Float_Point *p_in, IVP_U_Poi
     //h = p_in->k[1]; x = h*get_elem(0,1);	y = h*get_elem(1,1);	a += x;	x = h*get_elem(2,1);	 b+=y, c+= x;
     //h = p_in->k[2]; x = h*get_elem(0,2);	y = h*get_elem(1,2);	a += x;	x = h*get_elem(2,2);	 b+=y, c+= x;
     //a += vv.k[0];    b += vv.k[1];    c += vv.k[2];
+
     //p_out->k[0] = a;p_out->k[1] = b; p_out->k[2] = c;
+
+    IVP_DOUBLE h = p_in->k[0];
+    IVP_DOUBLE a = h * get_elem(0, 0);
+    IVP_DOUBLE b = h * get_elem(1, 0);
+    IVP_DOUBLE c = h * get_elem(2, 0);
+    IVP_DOUBLE x, y;
+    h = p_in->k[1]; x = h * get_elem(0, 1);	y = h * get_elem(1, 1);	a += x;	x = h * get_elem(2, 1);	 b += y, c += x;
+    h = p_in->k[2]; x = h * get_elem(0, 2);	y = h * get_elem(1, 2);	a += x;	x = h * get_elem(2, 2);	 b += y, c += x;
+    a += vv.k[0];    b += vv.k[1];    c += vv.k[2];
+    p_out->k[0] = a; p_out->k[1] = b; p_out->k[2] = c;
 }
 
 void IVP_U_Point::inline_calc_cross_product(const IVP_U_Point *v1,const IVP_U_Point *v2)

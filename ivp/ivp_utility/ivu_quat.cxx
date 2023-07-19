@@ -118,12 +118,20 @@ void IVP_U_Quat::set_matrix(IVP_U_Matrix3 *mat)const  {
   auto z = VectorClass::Vec4d(yy, xx, xx, 0) +
 		   VectorClass::Vec4d(zz, zz, yy, 0);
 
-  auto vmat = VectorClass::Vec8d(1.0, xy, xz, xy, 1.0f, yz, xz, yz);
-  vmat -= VectorClass::Vec8d(z[0], wz, nw[1], nw[2], z[1], wx, wy, nw[0]);
+  auto& vmat1 = *(VectorClass::Vec8d*)mat =
+			   VectorClass::Vec8d(1.0,  xy, xz,    0, xy,    1.0f, yz, 0);
+      vmat1 -= VectorClass::Vec8d(z[0], wz, nw[1], 0, nw[2], z[1], wx, 0);
+
+  auto& lvec = *(VectorClass::Vec4d*)((double*)mat + 8) =
+			  VectorClass::Vec4d(xz, yz, 1.0, 0);
+      lvec -= VectorClass::Vec4d(wy, nw[0], z[2], 0);
+
+  //auto vmat = VectorClass::Vec8d(1.0, xy, xz, xy, 1.0f, yz, xz, yz);
+  //vmat -= VectorClass::Vec8d(z[0], wz, nw[1], nw[2], z[1], wx, wy, nw[0]);
 
   //*(VectorClass::Vec8d*)mat
   //double* list = (double*)&vmat;
-  double* amat = (double*)mat;
+  //double* amat = (double*)mat;
   //
   //ivp_message("VecList: %.4f %.4f %.4f %.4f %.4f %.4f %.4f %.4f\n", list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7]);
   //ivp_message("VecMatr: %.4f %.4f %.4f %.4f %.4f %.4f %.4f %.4f\n", vmat[0], vmat[1], vmat[2], vmat[3], vmat[4], vmat[5], vmat[6], vmat[7]);
@@ -132,18 +140,19 @@ void IVP_U_Quat::set_matrix(IVP_U_Matrix3 *mat)const  {
   //amat[8] = 1.0f - z[2];
 
   //ivp_message("Wrote: %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf\n", amat[0], amat[1], amat[2], amat[3], amat[4], amat[5], amat[6], amat[7], amat[8]);
-  auto matrows = (IVP_U_Point*)mat;
+  //auto matrows = (IVP_U_Point*)mat;
   //auto vmatrows = (IVP_U_Point*)&vmat;
   
   //matrows[0] = vmatrows[0];
   //matrows[1] = vmatrows[1];
-  matrows[2] = *(IVP_U_Point*)((IVP_DOUBLE*)&vmat + 6);
-  amat[10] = 1.0 - z[2];
-  amat[11] = 0;
-  matrows[1] = *(IVP_U_Point*)((IVP_DOUBLE*)&vmat + 3);
-  amat[7] = 0;
-  matrows[0] = *(IVP_U_Point*)((IVP_DOUBLE*)&vmat + 0);
-  amat[3] = 0;
+  // 
+  //matrows[2] = *(IVP_U_Point*)((IVP_DOUBLE*)&vmat + 6);
+  //amat[10] = 1.0 - z[2];
+  //amat[11] = 0;
+  //matrows[1] = *(IVP_U_Point*)((IVP_DOUBLE*)&vmat + 3);
+  //amat[7] = 0;
+  //matrows[0] = *(IVP_U_Point*)((IVP_DOUBLE*)&vmat + 0);
+  //amat[3] = 0;
 
   // mmz: There are solutions better than this, however all my attempts crashed
   // matrows[0] = IVP_U_Point(vmat[0], vmat[1], vmat[2]);

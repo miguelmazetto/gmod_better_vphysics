@@ -43,18 +43,15 @@ IVP_DOUBLE IVP_Inline_Math::lut_asintbl[513] = { -1.5707963267948966, -1.5197264
 IVP_DOUBLE IVP_Inline_Math::lut_asin(IVP_FLOAT r) {
     if (r >= 1.0f) return 1.5707963267948966;
 
-    r = r * r * r * 256;
+    float xp = r * r * r * 256 + 256;
 
-    int index = (int)r;
+    int x0 = (int)xp;
+    int x1 = x0 + 1;
 
-    IVP_FLOAT decpart = r - index;
-    decpart = decpart < 0 ? -decpart : decpart; // abs
+    double y0 = lut_asintbl[x0];
+    double y1 = lut_asintbl[x1];
 
-    IVP_FLOAT nextfrac = 1.f - decpart;
-
-    index += 256;
-
-    return lut_asintbl[index] * decpart + lut_asintbl[index + 1] * nextfrac;
+    return y0 + ((y1 - y0) / (x1 - x0)) * (xp - x0);
 }
 
 IVP_DOUBLE IVP_Inline_Math::lut_acos(IVP_FLOAT r) { return 1.5707963267948966 - lut_asin(r); }
