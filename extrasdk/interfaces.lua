@@ -3,7 +3,7 @@ group("SourceSDK")
 		kind("StaticLib")
 		location("../projects/" .. os.target() .. "/" .. _ACTION)
 
-		files({"interfaces.cpp"})
+		files({"../sourcesdk-minimal/interfaces/interfaces.cpp"})
 		vpaths({["Source files/*"] = "*.cpp"})
 
 		filter("system:linux")
